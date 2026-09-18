@@ -1,0 +1,3 @@
+import {NextRequest,NextResponse} from 'next/server';import {createClient} from '@/lib/supabase/server';
+export async function GET(){const s=await createClient();const{data,error}=await s.from('entrevistas').select('*').order('data',{ascending:true});return NextResponse.json(error?{error:error.message}:data,{status:error?400:200})}
+export async function POST(req:NextRequest){const s=await createClient();const body=await req.json();const{data,error}=await s.from('entrevistas').insert(body).select().single();return NextResponse.json(error?{error:error.message}:data,{status:error?400:201})}
