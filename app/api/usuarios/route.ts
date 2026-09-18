@@ -1,0 +1,3 @@
+import {NextRequest,NextResponse} from 'next/server';import {createClient} from '@/lib/supabase/server';
+export async function GET(){const s=await createClient();const{data,error}=await s.from('usuarios').select('*').order('created_at',{ascending:false});return NextResponse.json(error?{error:error.message}:data,{status:error?400:200})}
+export async function PATCH(req:NextRequest){const s=await createClient();const{id,...changes}=await req.json();const{data,error}=await s.from('usuarios').update(changes).eq('id',id).select().single();return NextResponse.json(error?{error:error.message}:data,{status:error?400:200})}
