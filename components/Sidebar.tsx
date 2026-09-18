@@ -1,0 +1,3 @@
+import Link from 'next/link';
+const items=[['/dashboard','Dashboard'],['/vagas','Vagas'],['/candidatos','Candidatos'],['/entrevistas','Entrevistas'],['/financeiro','Financeiro'],['/empresas','Empresas'],['/usuarios','Usuários']];
+export function Sidebar(){return <aside className="w-64 bg-[#0B1F3A] text-white min-h-screen p-5 hidden md:block"><div className="mb-8"><div className="text-xs tracking-[.25em] text-slate-300">AP CONSULTORIA</div><div className="font-black text-xl mt-1">Gestão RH</div></div><nav>{items.map(([href,label])=><Link key={href} href={href} className="block px-4 py-3 rounded-xl hover:bg-white/10">{label}</Link>)}</nav></aside>}
