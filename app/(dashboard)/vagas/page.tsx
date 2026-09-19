@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import {revalidatePath} from 'next/cache';
-import {BriefcaseBusiness,CheckCircle2,Clock3,Download,Eye,MoreVertical,PauseCircle,Pencil,Plus,Search,SlidersHorizontal} from 'lucide-react';
+import {BriefcaseBusiness,CheckCircle2,Clock3,Download,MoreVertical,PauseCircle,Plus,Search,SlidersHorizontal} from 'lucide-react';
 import {createClient} from '@/lib/supabase/server';
 import {EmptyRow,KpiCard,PageHeader} from '@/components/ModuleUI';
 import { ActionModal } from "@/components/ActionModal";
