@@ -1,13 +1,15 @@
 "use client";
 import {useState} from 'react';
+import {useRouter} from 'next/navigation';
 import {createClient} from '@/lib/supabase/client';
 import {Mail,Lock,Eye,EyeOff,ArrowRight,Users,CalendarDays,Building2,BarChart3,ShieldCheck,Moon} from 'lucide-react';
 
 function APLogo(){return <div className="login-logo" aria-label="AP Consultoria Recursos Humanos"><div className="ap-symbol"><span>A</span><span>P</span><i/></div><div className="ap-name">AP CONSULTORIA</div><div className="ap-rh"><b/> RECURSOS HUMANOS <b/></div></div>}
 
 export default function LoginPage(){
+ const router=useRouter();
  const[email,setEmail]=useState('');const[password,setPassword]=useState('');const[msg,setMsg]=useState('');const[show,setShow]=useState(false);const[loading,setLoading]=useState(false);
- async function submit(e:React.FormEvent){e.preventDefault();setMsg('');setLoading(true);const s=createClient();const{error}=await s.auth.signInWithPassword({email,password});setLoading(false);if(error)return setMsg('E-mail ou senha inválidos.');location.href='/dashboard'}
+ async function submit(e:React.FormEvent){e.preventDefault();setMsg('');setLoading(true);const s=createClient();const{error}=await s.auth.signInWithPassword({email,password});if(!error)await s.rpc('touch_last_access');setLoading(false);if(error)return setMsg('E-mail ou senha inválidos.');router.replace('/dashboard');router.refresh()}
  return <main className="login-page">
   <section className="login-showcase">
    <div className="showcase-overlay"/>
@@ -27,7 +29,7 @@ export default function LoginPage(){
    <form onSubmit={submit} className="login-form"><APLogo/><h2>Bem-vindo(a)</h2><p>Faça login para acessar o sistema</p>
     <label>E-mail<div className="field"><Mail/><input type="email" placeholder="seu@email.com" value={email} onChange={e=>setEmail(e.target.value)} required/></div></label>
     <label>Senha<div className="field"><Lock/><input type={show?'text':'password'} placeholder="Digite sua senha" value={password} onChange={e=>setPassword(e.target.value)} required/><button type="button" className="eye" onClick={()=>setShow(!show)} aria-label="Mostrar senha">{show?<EyeOff/>:<Eye/>}</button></div></label>
-    <div className="login-options"><label className="remember"><input type="checkbox"/> Lembrar de mim</label><a href="#">Esqueceu sua senha?</a></div>
+    <div className="login-options"><span>Sessão protegida</span><span>Recuperação de senha pelo administrador</span></div>
     {msg&&<div className="login-error">{msg}</div>}
     <button className="login-submit" disabled={loading}>{loading?'Entrando...':<>Entrar <ArrowRight size={20}/></>}</button>
     <div className="secure"><ShieldCheck size={16}/> Seus dados estão seguros e protegidos</div>
