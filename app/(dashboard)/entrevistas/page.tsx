@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 import {
+import { ActionModal } from "@/components/ActionModal";
   CalendarDays,
   CheckCircle2,
   Clock3,
@@ -235,7 +236,7 @@ export default async function Page() {
                       </span>
                     </td>
                     <td>
-                      <div className="interview-actions">{r.link?<a href={r.link} target="_blank" rel="noreferrer"><Video size={14}/></a>:<Video size={14}/>}<details className="row-editor"><summary><Pencil size={14}/></summary><form action={atualizar}><input type="hidden" name="id" value={r.id}/><select name="status" defaultValue={r.status}><option value="agendada">Agendada</option><option value="confirmada">Confirmada</option><option value="realizada">Realizada</option><option value="nao_compareceu">Não compareceu</option></select><input name="link" defaultValue={r.link||""} placeholder="Link da reunião"/><button className="primary-button">Salvar</button></form></details><form action={excluir}><input type="hidden" name="id" value={r.id}/><button className="icon-button" title="Excluir"><X size={14}/></button></form></div>
+                      <div className="interview-actions">{r.link?<a href={r.link} target="_blank" rel="noreferrer"><Video size={14}/></a>:<Video size={14}/>}<ActionModal kind="edit" title={r.candidatos?.nome||"Entrevista"}><form action={atualizar}><input type="hidden" name="id" value={r.id}/><label>Status<select name="status" defaultValue={r.status}><option value="agendada">Agendada</option><option value="confirmada">Confirmada</option><option value="realizada">Realizada</option><option value="nao_compareceu">Não compareceu</option></select></label><label>Link da reunião<input name="link" defaultValue={r.link||""}/></label><button className="primary-button">Salvar</button></form></ActionModal><form action={excluir}><input type="hidden" name="id" value={r.id}/><button className="icon-button" title="Excluir"><X size={14}/></button></form></div>
                     </td>
                   </tr>
                 ))}
