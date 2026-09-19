@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import {
+import { ActionModal } from "@/components/ActionModal";
   BadgeDollarSign,
   WalletCards,
   ReceiptText,
@@ -228,7 +229,7 @@ export default async function Financeiro() {
                     </span>
                   </td>
                   <td>
-                    <div className="row-actions"><details className="row-editor"><summary><Pencil size={14}/></summary><form action={editar}><input type="hidden" name="id" value={r.id}/><input name="valor" type="number" step="0.01" defaultValue={r.valor||0}/><input name="percentual" type="number" step="0.01" defaultValue={r.percentual||0}/><input name="data_vencimento" type="date" defaultValue={r.data_vencimento||""}/><button className="primary-button">Salvar</button></form></details><form action={baixar}>
+                    <div className="row-actions"><ActionModal kind="edit" title={r.vagas?.cargo||"Lançamento financeiro"}><form action={editar}><input type="hidden" name="id" value={r.id}/><label>Valor<input name="valor" type="number" step="0.01" defaultValue={r.valor||0}/></label><label>Percentual<input name="percentual" type="number" step="0.01" defaultValue={r.percentual||0}/></label><label>Vencimento<input name="data_vencimento" type="date" defaultValue={r.data_vencimento||""}/></label><button className="primary-button">Salvar</button></form></ActionModal><form action={baixar}>
                       <input type="hidden" name="id" value={r.id} />
                       <input
                         type="hidden"
