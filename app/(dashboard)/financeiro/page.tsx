@@ -34,6 +34,12 @@ export default async function Financeiro() {
       valor: Number(f.get("valor") || 0),
       percentual: Number(f.get("percentual") || 0),
       data_vencimento: String(f.get("data_vencimento") || "") || null,
+      numero_nota: String(f.get("numero_nota")||"")||null,
+      data_emissao_nota: String(f.get("data_emissao_nota")||"")||null,
+      valor_nota: f.get("valor_nota")?Number(f.get("valor_nota")):null,
+      valor_pago: f.get("valor_pago")?Number(f.get("valor_pago")):null,
+      forma_pagamento: String(f.get("forma_pagamento")||"")||null,
+      observacoes: String(f.get("observacoes")||"")||null,
     }).eq("id", String(f.get("id")));
     revalidatePath("/financeiro");
   }
@@ -196,7 +202,7 @@ export default async function Financeiro() {
           <table className="module-table">
             <thead>
               <tr>
-                <th>Empresa</th>
+                <th>OS</th><th>Empresa</th>
                 <th>Vaga</th>
                 <th>Valor</th>
                 <th>Comissão</th>
@@ -208,7 +214,7 @@ export default async function Financeiro() {
             <tbody>
               {list.map((r: any) => (
                 <tr key={r.id}>
-                  <td>{r.vagas?.empresas?.nome || "—"}</td>
+                  <td><b>{r.numero_os||"—"}</b></td><td>{r.vagas?.empresas?.nome || "—"}</td>
                   <td>
                     <b>{r.vagas?.cargo || "—"}</b>
                   </td>
@@ -229,7 +235,7 @@ export default async function Financeiro() {
                     </span>
                   </td>
                   <td>
-                    <div className="row-actions"><ActionModal kind="edit" title={r.vagas?.cargo||"Lançamento financeiro"}><form action={editar}><input type="hidden" name="id" value={r.id}/><label>Valor<input name="valor" type="number" step="0.01" defaultValue={r.valor||0}/></label><label>Percentual<input name="percentual" type="number" step="0.01" defaultValue={r.percentual||0}/></label><label>Vencimento<input name="data_vencimento" type="date" defaultValue={r.data_vencimento||""}/></label><button className="primary-button">Salvar</button></form></ActionModal><form action={baixar}>
+                    <div className="row-actions"><ActionModal kind="view" title={r.numero_os||r.vagas?.cargo||"Financeiro"}><div><p><strong>OS:</strong> {r.numero_os||"—"}</p><p><strong>Empresa:</strong> {r.vagas?.empresas?.nome||"—"}</p><p><strong>Vaga:</strong> {r.vagas?.cargo||"—"}</p><p><strong>Base:</strong> {money(Number(r.valor||0))}</p><p><strong>Honorários:</strong> {money(Number(r.valor_comissao||0))}</p><p><strong>NF:</strong> {r.numero_nota||"—"}</p><p><strong>Recebido:</strong> {r.valor_pago?money(Number(r.valor_pago)):"—"}</p><p><strong>Observações:</strong> {r.observacoes||"—"}</p></div></ActionModal><ActionModal kind="edit" title={r.numero_os||r.vagas?.cargo||"Lançamento financeiro"}><form action={editar}><input type="hidden" name="id" value={r.id}/><label>Base de cálculo<input name="valor" type="number" step="0.01" defaultValue={r.valor||0}/></label><label>Percentual<input name="percentual" type="number" step="0.01" defaultValue={r.percentual||0}/></label><label>Vencimento<input name="data_vencimento" type="date" defaultValue={r.data_vencimento||""}/></label><label>Número da NF<input name="numero_nota" defaultValue={r.numero_nota||""}/></label><label>Data de emissão<input name="data_emissao_nota" type="date" defaultValue={r.data_emissao_nota||""}/></label><label>Valor da NF<input name="valor_nota" type="number" step="0.01" defaultValue={r.valor_nota||""}/></label><label>Valor recebido<input name="valor_pago" type="number" step="0.01" defaultValue={r.valor_pago||""}/></label><label>Forma de pagamento<input name="forma_pagamento" defaultValue={r.forma_pagamento||""}/></label><label className="wide">Observações<textarea name="observacoes" rows={4} defaultValue={r.observacoes||""}/></label><button className="primary-button">Salvar alterações</button></form></ActionModal><form action={baixar}>
                       <input type="hidden" name="id" value={r.id} />
                       <input
                         type="hidden"
@@ -244,7 +250,7 @@ export default async function Financeiro() {
                 </tr>
               ))}
               {!list.length && (
-                <EmptyRow colSpan={7} label="Nenhum lançamento financeiro." />
+                <EmptyRow colSpan={8} label="Nenhum lançamento financeiro." />
               )}
             </tbody>
           </table>
