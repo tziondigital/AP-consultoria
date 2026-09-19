@@ -30,7 +30,7 @@ create or replace function public.admin_update_user_profile(
   p_empresa_ids uuid[] default '{}'::uuid[]
 ) returns public.usuarios
 language plpgsql
-security definer
+security invoker
 set search_path = public, private, auth, pg_temp
 as $$
 declare
@@ -80,20 +80,6 @@ $$;
 
 revoke all on function public.admin_update_user_profile(uuid,text,text,text,text,public.perfil_usuario,boolean,uuid[]) from public, anon;
 grant execute on function public.admin_update_user_profile(uuid,text,text,text,text,public.perfil_usuario,boolean,uuid[]) to authenticated;
-
-create or replace function public.touch_last_access()
-returns void
-language sql
-security definer
-set search_path = public, auth, pg_temp
-as $$
-  update public.usuarios
-  set ultimo_acesso = now()
-  where id = auth.uid() and ativo = true;
-$$;
-
-revoke all on function public.touch_last_access() from public, anon;
-grant execute on function public.touch_last_access() to authenticated;
 
 -- Mantém os perfis criados pelo Auth sincronizados com os campos disponíveis.
 create or replace function public.handle_new_user()

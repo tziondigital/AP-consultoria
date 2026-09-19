@@ -9,7 +9,7 @@ function APLogo(){return <div className="login-logo" aria-label="AP Consultoria 
 export default function LoginPage(){
  const router=useRouter();
  const[email,setEmail]=useState('');const[password,setPassword]=useState('');const[msg,setMsg]=useState('');const[show,setShow]=useState(false);const[loading,setLoading]=useState(false);
- async function submit(e:React.FormEvent){e.preventDefault();setMsg('');setLoading(true);const s=createClient();const{error}=await s.auth.signInWithPassword({email,password});if(!error)await s.rpc('touch_last_access');setLoading(false);if(error)return setMsg('E-mail ou senha inválidos.');router.replace('/dashboard');router.refresh()}
+ async function submit(e:React.FormEvent){e.preventDefault();setMsg('');setLoading(true);const s=createClient();const{error}=await s.auth.signInWithPassword({email,password});setLoading(false);if(error)return setMsg('E-mail ou senha inválidos.');router.replace('/dashboard');router.refresh()}
  return <main className="login-page">
   <section className="login-showcase">
    <div className="showcase-overlay"/>
