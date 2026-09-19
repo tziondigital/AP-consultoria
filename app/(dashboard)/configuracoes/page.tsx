@@ -48,11 +48,11 @@ export default async function Configuracoes() {
         <b>Geral</b>
         <Link href="/notificacoes">Notificações</Link>
         <Link href="/usuarios">Permissões</Link>
-        <span>Integrações</span>
-        <span>Personalização</span>
-        <span>Segurança</span>
-        <span>Backup</span>
-        <span>Logs</span>
+        <Link href="/integracoes">Integrações</Link>
+        <Link href="/personalizacao">Personalização</Link>
+        <Link href="/seguranca">Segurança</Link>
+        <Link href="/backup">Backup</Link>
+        <Link href="/logs">Logs</Link>
       </nav>
       <div className="settings-kpis">
         <div>
