@@ -5,6 +5,7 @@ import {
   Eye,
   FileText,
   MoreVertical,
+  Trash2,
   Pencil,
   Plus,
   Search,
@@ -18,7 +19,6 @@ import {
   PageHeader,
 } from "@/components/ModuleUI";
 import { ResumeActions } from "@/components/ResumeActions";
-import { Trash2 } from "lucide-react";
 export default async function Page() {
   async function criar(f: FormData) {
     "use server";
