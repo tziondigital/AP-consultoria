@@ -65,11 +65,6 @@ export function Sidebar() {
           <span>Configurações</span>
         </Link>
       </div>
-      <div className="brand-message">
-        <b>Conectando talentos,</b>
-        <br />
-        gerando valor.
-      </div>
     </aside>
   );
 }
