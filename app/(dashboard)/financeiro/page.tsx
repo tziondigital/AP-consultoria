@@ -14,7 +14,9 @@ import { EmptyRow, KpiCard, PageHeader } from "@/components/ModuleUI";
 const statusLabel:Record<string,string>={pendente:"Aguardando faturamento",parcial:"Aguardando pagamento",pago:"Pago",vencido:"Vencido",cancelado:"Cancelado"};
 const money = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-export default async function Financeiro() {
+type Params={q?:string;status?:string};
+export default async function Financeiro({searchParams}:{searchParams:Promise<Params>}) {
+  const params=await searchParams;
   async function criar(f: FormData) {
     "use server";
     const s = await createClient();
@@ -83,7 +85,9 @@ export default async function Financeiro() {
       .select("id,cargo,empresas(nome)")
       .order("created_at", { ascending: false }),
   ]);
-  const list = rows || [];
+  const all = rows || [];
+  const query=(params.q||"").trim().toLocaleLowerCase("pt-BR");
+  const list=all.filter((r:any)=>(!query||[r.numero_os,r.numero_nota,r.vagas?.cargo,r.vagas?.empresas?.nome].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR").includes(query))&&(!params.status||r.status===params.status));
   const total = list.reduce((a: any, r: any) => a + Number(r.valor || 0), 0);
   const paid = list
     .filter((r: any) => r.pago)
@@ -196,6 +200,7 @@ export default async function Financeiro() {
         </div>
       </div>
       <div className="module-panel">
+        <form className="filterbar" method="get"><label className="searchbox"><input name="q" defaultValue={params.q||""} placeholder="Buscar por OS, empresa, vaga ou NF..."/></label><select name="status" defaultValue={params.status||""}><option value="">Todos os status</option><option value="pendente">Aguardando faturamento</option><option value="parcial">Aguardando pagamento</option><option value="pago">Pago</option><option value="vencido">Vencido</option><option value="cancelado">Cancelado</option></select><button className="outline-button">Filtrar</button></form>
         <div className="panel-heading">
           <b>Contratos e Faturamento</b>
           <span>Últimas movimentações</span>
