@@ -3,7 +3,6 @@ import {
   CalendarDays,
   CheckCircle2,
   FileText,
-  Trash2,
   Plus,
   Search,
   Users,
