@@ -1,2 +1,203 @@
-import {createClient} from '@/lib/supabase/server';import {revalidatePath} from 'next/cache';
-export default async function Page(){async function criar(f:FormData){'use server';const s=await createClient();await s.from('candidatos').insert({nome:String(f.get('nome')),email:String(f.get('email')||'')||null,telefone:String(f.get('telefone')||'')||null,cidade:String(f.get('cidade')||'')||null,estado:String(f.get('estado')||'')||null,cargo:String(f.get('cargo')||'')||null,situacao:String(f.get('situacao')||'disponivel')});revalidatePath('/candidatos')}const s=await createClient();const{data:rows}=await s.from('candidatos').select('*').order('created_at',{ascending:false});return <section><h1 className="page-title">Candidatos</h1><p className="muted">Banco de talentos e dados de contato.</p><div className="card form-card"><h2 className="section-title">Novo candidato</h2><form action={criar} className="quick-form"><div className="field-group"><label>Nome</label><input name="nome" required/></div><div className="field-group"><label>E-mail</label><input name="email" type="email"/></div><div className="field-group"><label>Telefone</label><input name="telefone"/></div><div className="field-group"><label>Cargo</label><input name="cargo"/></div><div className="field-group"><label>Cidade</label><input name="cidade"/></div><div className="field-group"><label>UF</label><input name="estado" maxLength={2}/></div><div className="field-group"><label>Situação</label><select name="situacao"><option value="disponivel">Disponível</option><option value="empregado">Empregado</option></select></div><button className="button">Cadastrar</button></form></div><div className="card table-card"><div className="table-head"><h2 className="section-title" style={{margin:0}}>Banco de talentos</h2><span className="muted">{rows?.length||0} candidato(s)</span></div><div className="table-wrap"><table><thead><tr><th>Nome</th><th>Cargo</th><th>E-mail</th><th>Telefone</th><th>Cidade/UF</th><th>Currículo</th></tr></thead><tbody>{(rows||[]).map((r:any)=><tr key={r.id}><td><b>{r.nome}</b><div className="muted">{r.situacao||'disponivel'}</div></td><td>{r.cargo||'—'}</td><td>{r.email||'—'}</td><td>{r.telefone||'—'}</td><td>{[r.cidade,r.estado].filter(Boolean).join(' / ')||'—'}</td><td>{r.curriculo_path?'Anexado':'—'}</td></tr>)}</tbody></table>{!rows?.length&&<div className="empty">Nenhum candidato cadastrado.</div>}</div></div></section>}
+import { revalidatePath } from "next/cache";
+import {
+  CalendarDays,
+  CheckCircle2,
+  Eye,
+  FileText,
+  MoreVertical,
+  Pencil,
+  Plus,
+  Search,
+  Users,
+} from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import {
+  EmptyRow,
+  InitialAvatar,
+  KpiCard,
+  PageHeader,
+} from "@/components/ModuleUI";
+import { ResumeActions } from "@/components/ResumeActions";
+export default async function Page() {
+  async function criar(f: FormData) {
+    "use server";
+    const s = await createClient();
+    await s
+      .from("candidatos")
+      .insert({
+        nome: String(f.get("nome")),
+        email: String(f.get("email") || "") || null,
+        telefone: String(f.get("telefone") || "") || null,
+        cidade: String(f.get("cidade") || "") || null,
+        estado: String(f.get("estado") || "") || null,
+        cargo: String(f.get("cargo") || "") || null,
+        situacao: String(f.get("situacao") || "disponivel"),
+      });
+    revalidatePath("/candidatos");
+  }
+  const s = await createClient();
+  const [{ data: rows }, { data: apps }, { data: interviews }] =
+    await Promise.all([
+      s
+        .from("candidatos")
+        .select("*")
+        .order("created_at", { ascending: false }),
+      s.from("candidaturas").select("candidato_id,status,vagas(cargo)"),
+      s.from("entrevistas").select("candidato_id,status"),
+    ]);
+  const list: any[] = (rows || []) as any[],
+    applications: any[] = (apps || []) as any[],
+    hired = applications.filter((x: any) => x.status === "contratado").length;
+  return (
+    <section className="module-page">
+      <PageHeader
+        title="Candidatos"
+        description="Cadastre, gerencie e acompanhe os candidatos em todos os processos seletivos."
+      />
+      <div className="module-kpis four">
+        <KpiCard
+          Icon={Users}
+          value={list.length}
+          label="Total de candidatos"
+          note="↑ base de talentos"
+        />
+        <KpiCard
+          Icon={FileText}
+          value={new Set(applications.map((x: any) => x.candidato_id)).size}
+          label="Em processos"
+          note="↑ processos ativos"
+        />
+        <KpiCard
+          Icon={CalendarDays}
+          value={
+            (interviews || []).filter((x: any) =>
+              ["agendada", "confirmada"].includes(x.status),
+            ).length
+          }
+          label="Entrevistas agendadas"
+          note="↑ agenda atualizada"
+        />
+        <KpiCard
+          Icon={CheckCircle2}
+          value={hired}
+          label="Contratados"
+          note="↑ resultado acumulado"
+          tone="green"
+        />
+      </div>
+      <div className="module-panel">
+        <div className="filterbar">
+          <label className="searchbox">
+            <Search size={15} />
+            <input placeholder="Buscar por nome, cargo, telefone ou e-mail..." />
+          </label>
+          <select>
+            <option>Todos os processos</option>
+          </select>
+          <select>
+            <option>Todas as etapas</option>
+          </select>
+          <select>
+            <option>Todos os status</option>
+          </select>
+          <details className="action-popover">
+            <summary>
+              <Plus size={15} /> Novo candidato
+            </summary>
+            <form action={criar} className="popover-form">
+              <input name="nome" placeholder="Nome" required />
+              <input name="email" type="email" placeholder="E-mail" />
+              <input name="telefone" placeholder="Telefone" />
+              <input name="cargo" placeholder="Cargo pretendido" />
+              <input name="cidade" placeholder="Cidade" />
+              <input name="estado" maxLength={2} placeholder="UF" />
+              <select name="situacao">
+                <option value="disponivel">Disponível</option>
+                <option value="empregado">Empregado</option>
+              </select>
+              <button className="primary-button">Cadastrar candidato</button>
+            </form>
+          </details>
+        </div>
+        <div className="table-wrap">
+          <table className="module-table">
+            <thead>
+              <tr>
+                <th>Nome ↕</th>
+                <th>Cargo pretendido ↕</th>
+                <th>Telefone ↕</th>
+                <th>E-mail ↕</th>
+                <th>Etapa ↕</th>
+                <th>Status ↕</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {list.slice(0, 10).map((r: any, i: number) => {
+                const app = applications.find(
+                  (x: any) => x.candidato_id === r.id,
+                );
+                return (
+                  <tr key={r.id}>
+                    <td>
+                      <div className="entity-cell">
+                        <InitialAvatar name={r.nome} index={i} />
+                        <div>
+                          <b>{r.nome}</b>
+                          <small>ID: {String(i + 1).padStart(4, "0")}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{r.cargo || app?.vagas?.cargo || "—"}</td>
+                    <td>{r.telefone || "—"}</td>
+                    <td>{r.email || "—"}</td>
+                    <td>
+                      <span className="vacancy-stage stage-blue">
+                        {app?.status === "entrevista"
+                          ? "Entrevistas"
+                          : app?.status === "aprovado"
+                            ? "Finalistas"
+                            : app?.status === "triagem"
+                              ? "Triagem"
+                              : "Em análise"}
+                      </span>
+                    </td>
+                    <td>
+                      <span
+                        className={`status-chip ${r.situacao === "empregado" ? "neutral" : "success"}`}
+                      >
+                        {r.situacao === "empregado"
+                          ? "Indisponível"
+                          : "Confirmado"}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="row-actions">
+                        <button>
+                          <Eye size={14} />
+                        </button>
+                        <button>
+                          <Pencil size={14} />
+                        </button>
+                        <ResumeActions candidateId={r.id} path={r.curriculo_path}/><button><MoreVertical size={14} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+              {!list.length && (
+                <EmptyRow colSpan={7} label="Nenhum candidato cadastrado." />
+              )}
+            </tbody>
+          </table>
+        </div>
+        <div className="pagination">
+          <span>
+            Mostrando {Math.min(10, list.length)} de {list.length} candidatos
+          </span>
+          <b>1</b>
+        </div>
+      </div>
+    </section>
+  );
+}

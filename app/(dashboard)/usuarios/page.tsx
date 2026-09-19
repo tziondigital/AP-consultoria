@@ -1,8 +1,9 @@
 import {createClient} from '@/lib/supabase/server';
 import {revalidatePath} from 'next/cache';
 import {redirect} from 'next/navigation';
-import {Users,UserRoundCheck,ShieldCheck,UserRoundX,Plus,Search,Pencil} from 'lucide-react';
+import {Users,UserRoundCheck,ShieldCheck,UserRoundX,Search,Pencil} from 'lucide-react';
 import {EmptyRow,InitialAvatar,KpiCard,PageHeader} from '@/components/ModuleUI';
+import {UserInviteForm} from '@/components/UserInviteForm';
 
 const roleLabel:Record<string,string>={admin:'Administrador',operador:'Recrutador',cliente:'Gestor',financeiro:'Financeiro'};
 type SearchParams={q?:string;perfil?:string;status?:string;salvo?:string;erro?:string};
@@ -34,7 +35,7 @@ export default async function Usuarios({searchParams}:{searchParams:Promise<Sear
   const active=users.filter((x:any)=>x.ativo).length;const inactive=users.length-active;
   const profiles=new Set(users.map((x:any)=>x.perfil)).size;
   return <section className="module-page">
-    <PageHeader title="Usuários" description="Gerencie dados, permissões e vínculos de empresa." action={<button className="primary-button" disabled title="Convites dependem de um fluxo administrativo de Auth"><Plus size={16}/> Novo usuário</button>}/>
+    <PageHeader title="Usuários" description="Gerencie dados, permissões e vínculos de empresa." action={<UserInviteForm/>}/>
     <div className="module-kpis four"><KpiCard label="Usuários ativos" value={active} note="Com acesso ao sistema" Icon={UserRoundCheck} tone="green"/><KpiCard label="Usuários cadastrados" value={users.length} note="Perfis no Auth" Icon={Users}/><KpiCard label="Perfis de acesso" value={profiles} note="Perfis em uso" Icon={ShieldCheck}/><KpiCard label="Usuários inativos" value={inactive} note="Sem acesso atual" Icon={UserRoundX} tone="red"/></div>
     {params.salvo&&<div className="success-state">Usuário atualizado com sucesso.</div>}
     {params.erro&&<div className="error-state">Não foi possível atualizar: {params.erro}</div>}

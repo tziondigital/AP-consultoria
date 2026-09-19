@@ -12,12 +12,22 @@ import {
 import { PageHeader } from "@/components/ModuleUI";
 import Link from "next/link";
 import Image from "next/image";
+import { revalidatePath } from "next/cache";
 export default async function Configuracoes() {
+  async function salvar(f: FormData) {
+    "use server";
+    const db = await createClient();
+    const changes:Record<string,unknown>={updated_at:new Date().toISOString()};
+    for(const key of ["nome_empresa","cnpj","email","responsavel","endereco","idioma","fuso_horario","formato_data","formato_hora"])if(f.has(key))changes[key]=String(f.get(key)||"")||null;
+    if(f.has("preferencias")){changes.email_entrevista=f.get("email_entrevista")==="on";changes.indicadores_dashboard=f.get("indicadores_dashboard")==="on";changes.modo_escuro=f.get("modo_escuro")==="on";}
+    await db.from("configuracoes_sistema").update(changes).eq("id",true);
+    revalidatePath("/configuracoes");
+  }
   const s = await createClient();
   const {
     data: { user },
   } = await s.auth.getUser();
-  const [{ data: profile }, { count: users }, { count: logs }] =
+  const [{ data: profile }, { count: users }, { count: logs }, {data: config}] =
     await Promise.all([
       s
         .from("usuarios")
@@ -26,6 +36,7 @@ export default async function Configuracoes() {
         .single(),
       s.from("usuarios").select("*", { count: "exact", head: true }),
       s.from("audit_logs").select("*", { count: "exact", head: true }),
+      s.from("configuracoes_sistema").select("*").eq("id",true).single(),
     ]);
   return (
     <section className="module-page settings-page">
@@ -66,7 +77,7 @@ export default async function Configuracoes() {
         </div>
       </div>
       <div className="settings-grid">
-        <div className="module-panel settings-card">
+        <form className="module-panel settings-card" action={salvar}>
           <div className="panel-heading">
             <b>Dados da empresa</b>
           </div>
@@ -79,77 +90,74 @@ export default async function Configuracoes() {
           <div className="settings-form">
             <label>
               Nome da empresa
-              <input value="AP Consultoria" readOnly />
+              <input name="nome_empresa" defaultValue={config?.nome_empresa||"AP Consultoria"} />
             </label>
             <label>
               CNPJ
-              <input value="" placeholder="Não cadastrado" readOnly />
+              <input name="cnpj" defaultValue={config?.cnpj||""} placeholder="Não cadastrado" />
             </label>
             <label>
               E-mail
-              <input value={profile?.email || ""} readOnly />
+              <input name="email" defaultValue={config?.email||profile?.email||""} />
             </label>
             <label>
               Responsável
-              <input value={profile?.nome || ""} readOnly />
+              <input name="responsavel" defaultValue={config?.responsavel||profile?.nome||""} />
             </label>
             <label className="span-2">
               Endereço
-              <input value="" placeholder="Não cadastrado" readOnly />
+              <input name="endereco" defaultValue={config?.endereco||""} placeholder="Não cadastrado" />
             </label>
           </div>
-          <p className="info-note">
-            Os dados institucionais serão editáveis quando houver uma tabela de
-            configurações com controle de acesso no banco.
-          </p>
-          <button className="primary-button" disabled>
+          <button className="primary-button">
             <Save size={14} /> Salvar alterações
           </button>
-        </div>
-        <div className="module-panel settings-card">
+        </form>
+        <form className="module-panel settings-card" action={salvar}>
+          <input type="hidden" name="preferencias" value="1"/>
           <div className="panel-heading">
             <b>Preferências do sistema</b>
           </div>
           <div className="settings-form">
             <label>
               Idioma
-              <select defaultValue="pt-BR" disabled>
+              <select name="idioma" defaultValue={config?.idioma||"pt-BR"}>
                 <option value="pt-BR">Português (Brasil)</option>
               </select>
             </label>
             <label>
               Fuso horário
-              <select defaultValue="America/Sao_Paulo" disabled>
+              <select name="fuso_horario" defaultValue={config?.fuso_horario||"America/Sao_Paulo"}>
                 <option value="America/Sao_Paulo">Brasília (GMT-3)</option>
               </select>
             </label>
             <label>
               Formato de data
-              <select defaultValue="dd/MM/yyyy" disabled>
+              <select name="formato_data" defaultValue={config?.formato_data||"dd/MM/yyyy"}>
                 <option>dd/MM/yyyy</option>
               </select>
             </label>
             <label>
               Formato de hora
-              <select defaultValue="24h" disabled>
+              <select name="formato_hora" defaultValue={config?.formato_hora||"24h"}>
                 <option>24h</option>
               </select>
             </label>
           </div>
           <div className="toggle-list">
             <label>
-              <input type="checkbox" defaultChecked disabled /> E-mail de
+              <input name="email_entrevista" type="checkbox" defaultChecked={config?.email_entrevista??true} /> E-mail de
               entrevista via Edge Function
             </label>
             <label>
-              <input type="checkbox" defaultChecked disabled /> Exibir
+              <input name="indicadores_dashboard" type="checkbox" defaultChecked={config?.indicadores_dashboard??true} /> Exibir
               indicadores no dashboard
             </label>
             <label>
-              <input type="checkbox" disabled /> Modo escuro
+              <input name="modo_escuro" type="checkbox" defaultChecked={config?.modo_escuro??false} /> Modo escuro
             </label>
-          </div>
-        </div>
+          </div><button className="primary-button"><Save size={14}/> Salvar preferências</button>
+        </form>
         <div className="module-panel settings-card">
           <div className="panel-heading">
             <b>Segurança e plano</b>

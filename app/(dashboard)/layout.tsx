@@ -1,8 +1,9 @@
 import { Sidebar } from "@/components/Sidebar";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { Search, ChevronDown, Menu } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import { NotificationBell } from "@/components/NotificationBell";
+import { GlobalSearch } from "@/components/GlobalSearch";
 export default async function DashboardLayout({
   children,
 }: {
@@ -35,10 +36,7 @@ export default async function DashboardLayout({
           <button className="menu-toggle" aria-label="Abrir ou fechar menu">
             <Menu size={19} />
           </button>
-          <div className="global-search">
-            <Search size={16} />
-            <input placeholder="Buscar vagas, candidatos, empresas..." />
-          </div>
+          <GlobalSearch />
           <div className="top-actions">
             <NotificationBell userId={user.id} unread={unread || 0} />
             <div className="avatar">{initials}</div>

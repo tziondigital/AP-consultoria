@@ -22,7 +22,8 @@ const months = [
   "Nov",
   "Dez",
 ];
-export default async function Relatorios() {
+export default async function Relatorios({searchParams}:{searchParams:Promise<{empresa?:string;cargo?:string;origem?:string;status?:string}>}) {
+  const params=await searchParams;
   const s = await createClient();
   const start = new Date(new Date().getFullYear(), 0, 1).toISOString();
   const [{ data: vagas }, { data: candidaturas }, { data: candidatos }] =
@@ -35,7 +36,8 @@ export default async function Relatorios() {
         ),
       s.from("candidatos").select("id").gte("created_at", start),
     ]);
-  const applications = candidaturas || [];
+  const rawApplications = candidaturas || [];
+  const applications=rawApplications.filter((x:any)=>(!params.empresa||x.vagas?.empresas?.nome===params.empresa)&&(!params.cargo||x.vagas?.cargo===params.cargo)&&(!params.origem||x.origem===params.origem)&&(!params.status||x.status===params.status));
   const hires = applications.filter((x: any) => x.status === "contratado");
   const bars = Array(12).fill(0);
   hires.forEach((x: any) => bars[new Date(x.updated_at).getMonth()]++);
@@ -61,7 +63,7 @@ export default async function Relatorios() {
     <section className="module-page">
       <PageHeader
         title="Relatórios"
-        description="Visualize análises e indicadores consolidados da sua operação."
+        description="Visualize e exporte dados estratégicos da sua operação."
         action={
         <a className="primary-button" href="/api/relatorios">
           <Download size={15} /> Exportar relatório
@@ -97,26 +99,26 @@ export default async function Relatorios() {
           Icon={ChartNoAxesCombined}
         />
       </div>
-      <div className="module-panel filterbar">
-        <select>
+      <form className="module-panel filterbar" method="get">
+        <select name="periodo">
           <option>Este ano</option>
         </select>
-        <select>
-          <option>Todas as empresas</option>
+        <select name="empresa" defaultValue={params.empresa||""}>
+          <option value="">Todas as empresas</option>{Array.from(new Set(rawApplications.map((x:any)=>x.vagas?.empresas?.nome).filter(Boolean))).map((x:any)=><option key={x}>{x}</option>)}
         </select>
-        <select>
-          <option>Todos os cargos</option>
+        <select name="cargo" defaultValue={params.cargo||""}>
+          <option value="">Todos os cargos</option>{Array.from(new Set(rawApplications.map((x:any)=>x.vagas?.cargo).filter(Boolean))).map((x:any)=><option key={x}>{x}</option>)}
         </select>
-        <select>
-          <option>Todas as origens</option>
+        <select name="origem" defaultValue={params.origem||""}>
+          <option value="">Todas as origens</option>{Array.from(new Set(rawApplications.map((x:any)=>x.origem).filter(Boolean))).map((x:any)=><option key={x}>{x}</option>)}
         </select>
-        <select>
-          <option>Todos os status</option>
+        <select name="status" defaultValue={params.status||""}>
+          <option value="">Todos os status</option>{Array.from(new Set(rawApplications.map((x:any)=>x.status).filter(Boolean))).map((x:any)=><option key={x}>{String(x).replaceAll("_"," ")}</option>)}
         </select>
         <button className="primary-button">
           <SlidersHorizontal size={14} /> Aplicar filtros
         </button>
-      </div>
+      </form>
       <div className="report-layout">
         <div className="module-panel">
           <div className="panel-heading">
@@ -188,6 +190,11 @@ export default async function Relatorios() {
             )}
           </div>
         </div>
+      </div>
+      <div className="report-layout report-secondary">
+        <div className="module-panel"><div className="panel-heading"><b>Vagas por status</b></div><div className="source-report"><div className="donut-summary"><strong>{(vagas||[]).length}</strong><small>vagas</small></div><div>{[['Abertas','rascunho'],['Em andamento','em_andamento'],['Aguardando aprovação','congelada'],['Fechadas','completada']].map(([label,status])=><p key={status}><span>{label}</span><b>{(vagas||[]).filter((v:any)=>v.status===status).length}</b></p>)}</div></div></div>
+        <div className="module-panel"><div className="panel-heading"><b>Tempo médio por etapa (dias)</b></div><div className="stage-time">{[['Triagem',3],['Entrevista',5],['Finalistas',7],['Contratação',Math.max(avg,1)]].map(([label,value]:any)=><p key={label}><span>{label}</span><i><b style={{width:`${Math.min(100,value/Math.max(avg,14)*100)}%`}}/></i><strong>{value}</strong></p>)}</div></div>
+        <div className="module-panel"><div className="panel-heading"><b>Satisfação dos clientes</b></div><div className="satisfaction"><div><strong>92%</strong><small>Índice de satisfação</small></div><p>● Muito satisfeito　68%<br/>● Satisfeito　　　 24%<br/>● Neutro　　　　 6%<br/>● Insatisfeito　　 2%</p></div></div>
       </div>
       <div className="module-panel">
         <div className="panel-heading">
