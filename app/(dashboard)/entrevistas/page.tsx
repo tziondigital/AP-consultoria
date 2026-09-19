@@ -17,9 +17,11 @@ const br = (v: string) =>
     minute: "2-digit",
   });
 const days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
-export default async function Page() {
+type Params={status?:string;q?:string};
+export default async function Page({searchParams}:{searchParams:Promise<Params>}) {
+  const params=await searchParams;
   async function excluir(f: FormData) {"use server";const s=await createClient();await s.from("entrevistas").delete().eq("id",String(f.get("id")));revalidatePath("/entrevistas");}
-  async function atualizar(f: FormData) {"use server";const s=await createClient();await s.from("entrevistas").update({status:String(f.get("status")),link:String(f.get("link")||"")||null}).eq("id",String(f.get("id")));revalidatePath("/entrevistas");}
+  async function atualizar(f: FormData) {"use server";const s=await createClient();await s.from("entrevistas").update({status:String(f.get("status")),link:String(f.get("link")||"")||null,duracao_minutos:Number(f.get("duracao_minutos")||45),observacoes:String(f.get("observacoes")||"")||null}).eq("id",String(f.get("id")));revalidatePath("/entrevistas");}
   async function criar(f: FormData) {
     "use server";
     const s = await createClient(),
@@ -63,7 +65,9 @@ export default async function Page() {
       .select("id,candidatos(nome),vagas(cargo)")
       .in("status", ["novo", "triagem", "entrevista", "aprovado"]),
   ]);
-  const list = rows || [],
+  const all = rows || [],
+    query=(params.q||"").trim().toLocaleLowerCase("pt-BR"),
+    list=all.filter((r:any)=>(!query||[r.candidatos?.nome,r.candidatos?.email,r.vagas?.cargo,r.vagas?.empresas?.nome].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR").includes(query))&&(!params.status||r.status===params.status)),
     today = new Date().toLocaleDateString("pt-BR"),
     todayRows = list.filter(
       (r: any) =>
@@ -71,9 +75,9 @@ export default async function Page() {
           timeZone: "America/Sao_Paulo",
         }) === today,
     ),
-    confirmed = list.filter((r: any) => r.status === "confirmada").length,
-    pending = list.filter((r: any) => r.status === "agendada").length,
-    done = list.filter((r: any) => r.status === "realizada").length;
+    confirmed = all.filter((r: any) => r.status === "confirmada").length,
+    pending = all.filter((r: any) => r.status === "agendada").length,
+    done = all.filter((r: any) => r.status === "realizada").length;
   return (
     <section className="module-page">
       <PageHeader
@@ -141,18 +145,7 @@ export default async function Page() {
               Período
               <input value="Semana atual" readOnly />
             </label>
-            <label>
-              Recrutador
-              <select>
-                <option>Todos</option>
-              </select>
-            </label>
-            <label>
-              Status
-              <select>
-                <option>Todos</option>
-              </select>
-            </label>
+            <form method="get" className="filterbar"><label className="searchbox">Buscar<input name="q" defaultValue={params.q||""} placeholder="Candidato, vaga ou empresa"/></label><label>Status<select name="status" defaultValue={params.status||""}><option value="">Todos</option><option value="agendada">Agendada</option><option value="confirmada">Confirmada</option><option value="realizada">Realizada</option><option value="nao_compareceu">Não compareceu</option></select></label><button className="outline-button">Filtrar</button></form>
           </div>
           <div className="calendar-toolbar">
             <b>Setembro de 2026</b>
@@ -235,7 +228,7 @@ export default async function Page() {
                       </span>
                     </td>
                     <td>
-                      <div className="interview-actions">{r.link?<a href={r.link} target="_blank" rel="noreferrer"><Video size={14}/></a>:<Video size={14}/>}<ActionModal kind="edit" title={r.candidatos?.nome||"Entrevista"}><form action={atualizar}><input type="hidden" name="id" value={r.id}/><label>Status<select name="status" defaultValue={r.status}><option value="agendada">Agendada</option><option value="confirmada">Confirmada</option><option value="realizada">Realizada</option><option value="nao_compareceu">Não compareceu</option></select></label><label>Link da reunião<input name="link" defaultValue={r.link||""}/></label><button className="primary-button">Salvar</button></form></ActionModal><form action={excluir}><input type="hidden" name="id" value={r.id}/><ConfirmSubmitButton/></form></div>
+                      <div className="interview-actions">{r.link?<a href={r.link} target="_blank" rel="noreferrer"><Video size={14}/></a>:<Video size={14}/>}<ActionModal kind="edit" title={r.candidatos?.nome||"Entrevista"}><form action={atualizar}><input type="hidden" name="id" value={r.id}/><label>Status<select name="status" defaultValue={r.status}><option value="agendada">Agendada</option><option value="confirmada">Confirmada</option><option value="realizada">Realizada</option><option value="nao_compareceu">Não compareceu</option></select></label><label>Duração (min)<input name="duracao_minutos" type="number" min="1" defaultValue={r.duracao_minutos||45}/></label><label>Link da reunião<input name="link" type="url" defaultValue={r.link||""}/></label><label className="wide">Observações<textarea name="observacoes" rows={4} defaultValue={r.observacoes||""}/></label><button className="primary-button">Salvar</button></form></ActionModal><form action={excluir}><input type="hidden" name="id" value={r.id}/><ConfirmSubmitButton/></form></div>
                     </td>
                   </tr>
                 ))}
