@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/ModuleUI";
 import Link from "next/link";
+import Image from "next/image";
 export default async function Configuracoes() {
   const s = await createClient();
   const {
@@ -70,7 +71,7 @@ export default async function Configuracoes() {
             <b>Dados da empresa</b>
           </div>
           <div className="company-logo-row">
-            <img src="/ap-logo.svg" alt="Logo AP Consultoria" />
+            <Image src="/ap-logo.svg" alt="Logo AP Consultoria" width={120} height={72} />
             <button className="outline-button" disabled>
               Alterar logo
             </button>
