@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { ActionModal } from "@/components/ActionModal";
 import { EmptyRow, KpiCard, PageHeader } from "@/components/ModuleUI";
+const statusLabel:Record<string,string>={pendente:"Aguardando faturamento",parcial:"Aguardando pagamento",pago:"Pago",vencido:"Vencido",cancelado:"Cancelado"};
 const money = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 export default async function Financeiro() {
@@ -231,7 +232,7 @@ export default async function Financeiro() {
                     <span
                       className={`status-chip ${r.status === "pago" ? "success" : r.status === "vencido" ? "danger" : "warning"}`}
                     >
-                      {r.status}
+                      {statusLabel[r.status]||r.status}
                     </span>
                   </td>
                   <td>
