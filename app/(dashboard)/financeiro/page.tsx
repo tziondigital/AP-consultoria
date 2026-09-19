@@ -6,6 +6,8 @@ import {
   ReceiptText,
   ChartNoAxesCombined,
   Plus,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import { EmptyRow, KpiCard, PageHeader } from "@/components/ModuleUI";
 const money = (n: number) =>
@@ -13,7 +15,15 @@ const money = (n: number) =>
 export default async function Financeiro() {
   async function criar(f: FormData) {
     "use server";
-    const s = await createClient();
+    async function editar(f: FormData) {
+    "use server"; const s=await createClient();
+    await s.from("financeiro").update({valor:Number(f.get("valor")||0),percentual:Number(f.get("percentual")||0),data_vencimento:String(f.get("data_vencimento")||"")||null}).eq("id",String(f.get("id")));
+    revalidatePath("/financeiro");
+  }
+  async function excluir(f: FormData) {
+    "use server"; const s=await createClient(); await s.from("financeiro").delete().eq("id",String(f.get("id"))); revalidatePath("/financeiro");
+  }
+  const s = await createClient();
     await s
       .from("financeiro")
       .insert({
@@ -210,7 +220,7 @@ export default async function Financeiro() {
                     </span>
                   </td>
                   <td>
-                    <form action={baixar}>
+                    <div className="row-actions"><details className="row-editor"><summary><Pencil size={14}/></summary><form action={editar}><input type="hidden" name="id" value={r.id}/><input name="valor" type="number" step="0.01" defaultValue={r.valor||0}/><input name="percentual" type="number" step="0.01" defaultValue={r.percentual||0}/><input name="data_vencimento" type="date" defaultValue={r.data_vencimento||""}/><button className="primary-button">Salvar</button></form></details><form action={baixar}>
                       <input type="hidden" name="id" value={r.id} />
                       <input
                         type="hidden"
@@ -220,7 +230,7 @@ export default async function Financeiro() {
                       <button className="text-button">
                         {r.pago ? "Reabrir" : "Marcar pago"}
                       </button>
-                    </form>
+                    </form><form action={excluir}><input type="hidden" name="id" value={r.id}/><button title="Excluir"><Trash2 size={14}/></button></form></div>
                   </td>
                 </tr>
               ))}
