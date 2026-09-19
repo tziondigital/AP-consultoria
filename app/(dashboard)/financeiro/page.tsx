@@ -164,7 +164,7 @@ export default async function Financeiro() {
             <span>Dados reais</span>
           </div>
           <div className="bar-summary">
-            {list.slice(0, 8).map((r: any, i: number) => (
+            {list.slice(0, 8).map((r: any) => (
               <i
                 key={r.id}
                 style={{
