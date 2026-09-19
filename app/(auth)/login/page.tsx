@@ -1,7 +1,7 @@
 "use client";
 import {useState} from 'react';
 import {createClient} from '@/lib/supabase/client';
-import {Mail,Lock,Eye,EyeOff,ArrowRight,UsersRound,CalendarDays,Building2,BarChart3,ShieldCheck,Moon} from 'lucide-react';
+import {Mail,Lock,Eye,EyeOff,ArrowRight,Users,CalendarDays,Building2,BarChart3,ShieldCheck,Moon} from 'lucide-react';
 
 function APLogo(){return <div className="login-logo" aria-label="AP Consultoria Recursos Humanos"><div className="ap-symbol"><span>A</span><span>P</span><i/></div><div className="ap-name">AP CONSULTORIA</div><div className="ap-rh"><b/> RECURSOS HUMANOS <b/></div></div>}
 
@@ -14,7 +14,7 @@ export default function LoginPage(){
    <div className="showcase-content"><APLogo/>
     <div className="showcase-copy"><h1>Conectando<br/>pessoas a<br/><strong>grandes resultados</strong></h1><p>Soluções completas em Recursos Humanos<br/>para sua empresa crescer com as pessoas certas.</p>
      <div className="features">
-      <div><i><UsersRound/></i><span><b>Gestão de Vagas</b><small>Do recrutamento à contratação</small></span></div>
+      <div><i><Users/></i><span><b>Gestão de Vagas</b><small>Do recrutamento à contratação</small></span></div>
       <div><i><CalendarDays/></i><span><b>Entrevistas Organizadas</b><small>Mais agilidade no seu processo seletivo</small></span></div>
       <div><i><Building2/></i><span><b>Parceria com Empresas</b><small>Conectando talentos e oportunidades</small></span></div>
       <div><i><BarChart3/></i><span><b>Relatórios Inteligentes</b><small>Decisões baseadas em dados</small></span></div>
