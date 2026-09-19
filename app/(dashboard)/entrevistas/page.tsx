@@ -5,7 +5,6 @@ import {
   Clock3,
   Plus,
   Video,
-  X,
 } from "lucide-react";
 import { ActionModal } from "@/components/ActionModal";
 import {ConfirmSubmitButton} from "@/components/ConfirmSubmitButton";
