@@ -9,6 +9,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { ActionModal } from "@/components/ActionModal";
+import {ConfirmSubmitButton} from "@/components/ConfirmSubmitButton";
 import { EmptyRow, KpiCard, PageHeader } from "@/components/ModuleUI";
 const statusLabel:Record<string,string>={pendente:"Aguardando faturamento",parcial:"Aguardando pagamento",pago:"Pago",vencido:"Vencido",cancelado:"Cancelado"};
 const money = (n: number) =>
@@ -246,7 +247,7 @@ export default async function Financeiro() {
                       <button className="text-button">
                         {r.pago ? "Reabrir" : "Marcar pago"}
                       </button>
-                    </form><form action={excluir}><input type="hidden" name="id" value={r.id}/><button title="Excluir"><Trash2 size={14}/></button></form></div>
+                    </form><form action={excluir}><input type="hidden" name="id" value={r.id}/><ConfirmSubmitButton/></form></div>
                   </td>
                 </tr>
               ))}
