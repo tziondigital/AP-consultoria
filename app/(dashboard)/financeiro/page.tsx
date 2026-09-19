@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import {
@@ -180,14 +179,7 @@ export default async function Financeiro() {
           <div className="panel-heading">
             <b>Tipos de receita</b>
           </div>
-          <div
-            className="donut-summary"
-            style={
-              {
-                "--paid": `${total ? (paid / total) * 100 : 0}%`,
-              } as CSSProperties
-            }
-          >
+          <div className="donut-summary">
             <strong>{money(total)}</strong>
             <small>Total</small>
           </div>
