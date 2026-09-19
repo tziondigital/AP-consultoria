@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import Link from "next/link";
 import {
   BadgeDollarSign,
   WalletCards,
@@ -11,7 +12,7 @@ import { ActionModal } from "@/components/ActionModal";
 import {ConfirmSubmitButton} from "@/components/ConfirmSubmitButton";
 import {FinanceAttachmentActions} from "@/components/FinanceAttachmentActions";
 import { EmptyRow, KpiCard, PageHeader } from "@/components/ModuleUI";
-const statusLabel:Record<string,string>={pendente:"Aguardando faturamento",parcial:"Aguardando pagamento",pago:"Pago",vencido:"Vencido",cancelado:"Cancelado"};
+const financeStatus=(r:any)=>r.status==="pago"||r.pago?"Pago":r.status==="vencido"?"Vencido":r.status==="cancelado"?"Cancelado":r.status==="parcial"||Number(r.valor_pago||0)>0?"Aguardando pagamento":r.numero_nota||r.data_emissao_nota||r.data_faturamento?"Faturado":"Aguardando faturamento";
 const money = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 type Params={q?:string;status?:string};
@@ -178,7 +179,7 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
             <span>Dados reais</span>
           </div>
           <div className="bar-summary">
-            {list.slice(0, 8).map((r: any) => (
+            {all.slice(0, 8).map((r: any) => (
               <i
                 key={r.id}
                 style={{
@@ -200,7 +201,7 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
         </div>
       </div>
       <div className="module-panel">
-        <form className="filterbar" method="get"><label className="searchbox"><input name="q" defaultValue={params.q||""} placeholder="Buscar por OS, empresa, vaga ou NF..."/></label><select name="status" defaultValue={params.status||""}><option value="">Todos os status</option><option value="pendente">Aguardando faturamento</option><option value="parcial">Aguardando pagamento</option><option value="pago">Pago</option><option value="vencido">Vencido</option><option value="cancelado">Cancelado</option></select><button className="outline-button">Filtrar</button></form>
+        <form className="filterbar" method="get"><label className="searchbox"><input name="q" defaultValue={params.q||""} placeholder="Buscar por OS, empresa, vaga ou NF..."/></label><select name="status" defaultValue={params.status||""}><option value="">Todos os status</option><option value="pendente">Aguardando faturamento</option><option value="parcial">Aguardando pagamento</option><option value="pago">Pago</option><option value="vencido">Vencido</option><option value="cancelado">Cancelado</option></select><button className="outline-button">Filtrar</button>{(params.q||params.status)&&<Link className="outline-button" href="/financeiro">Limpar filtros</Link>}</form>
         <div className="panel-heading">
           <b>Contratos e Faturamento</b>
           <span>Últimas movimentações</span>
@@ -238,7 +239,7 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
                     <span
                       className={`status-chip ${r.status === "pago" ? "success" : r.status === "vencido" ? "danger" : "warning"}`}
                     >
-                      {statusLabel[r.status]||r.status}
+                      {financeStatus(r)}
                     </span>
                   </td>
                   <td>
