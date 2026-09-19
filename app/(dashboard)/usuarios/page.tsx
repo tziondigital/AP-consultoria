@@ -1,7 +1,7 @@
 import {createClient} from '@/lib/supabase/server';
 import {revalidatePath} from 'next/cache';
 import {redirect} from 'next/navigation';
-import {Users,UserRoundCheck,ShieldCheck,UserRoundX,Search,Pencil} from 'lucide-react';
+import {Users,UserRoundCheck,ShieldCheck,UserRoundX,Search} from 'lucide-react';
 import {EmptyRow,InitialAvatar,KpiCard,PageHeader} from '@/components/ModuleUI';
 import {UserInviteForm} from '@/components/UserInviteForm';
 import { ActionModal } from "@/components/ActionModal";
