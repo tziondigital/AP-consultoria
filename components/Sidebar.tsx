@@ -24,10 +24,10 @@ const items = [
   ["/financeiro", "Financeiro", WalletCards],
   ["/relatorios", "Relatórios", BarChart3],
 ] as const;
-export function Sidebar() {
+export function Sidebar({ collapsed=false }: { collapsed?: boolean }) {
   const p = usePathname();
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${collapsed ? "is-collapsed" : ""}`}>
       <div className="brand">
         <Image
           className="brand-logo"
