@@ -46,7 +46,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
         .from("candidatos")
         .select("*")
         .order("created_at", { ascending: false }),
-      s.from("candidaturas").select("id,candidato_id,status,origem,inscrito_em,vagas(cargo,empresas(nome)),avaliacoes(nota_tecnica,parecer,decisao,created_at)"),
+      s.from("candidaturas").select("id,candidato_id,status,origem,inscrito_em,vagas(cargo,empresas(nome)),avaliacoes(nota_tecnica,parecer,decisao,created_at)").order("inscrito_em",{ascending:false}),
       s.from("entrevistas").select("candidato_id,status"),
     ]);
   const all: any[] = (rows || []) as any[],
