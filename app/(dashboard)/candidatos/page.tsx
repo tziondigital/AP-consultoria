@@ -22,14 +22,8 @@ import { ResumeActions } from "@/components/ResumeActions";
 export default async function Page() {
   async function criar(f: FormData) {
     "use server";
-    async function editar(f: FormData) {
-    "use server"; const s=await createClient();
-    await s.from("candidatos").update({nome:String(f.get("nome")),email:String(f.get("email")||"")||null,telefone:String(f.get("telefone")||"")||null,cargo:String(f.get("cargo")||"")||null,situacao:String(f.get("situacao")||"disponivel")}).eq("id",String(f.get("id")));
-    revalidatePath("/candidatos");
-  }
-  async function excluir(f: FormData) {
-    "use server"; const s=await createClient(); await s.from("candidatos").delete().eq("id",String(f.get("id"))); revalidatePath("/candidatos");
-  }
+    async function editar(f: FormData) {"use server"; const s=await createClient(); await s.from("candidatos").update({nome:String(f.get("nome")),email:String(f.get("email")||"")||null,telefone:String(f.get("telefone")||"")||null,cargo:String(f.get("cargo")||"")||null,situacao:String(f.get("situacao")||"disponivel")}).eq("id",String(f.get("id"))); revalidatePath("/candidatos");}
+  async function excluir(f: FormData) {"use server"; const s=await createClient(); await s.from("candidatos").delete().eq("id",String(f.get("id"))); revalidatePath("/candidatos");}
   const s = await createClient();
     await s
       .from("candidatos")
