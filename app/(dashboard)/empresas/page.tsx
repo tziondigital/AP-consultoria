@@ -7,8 +7,6 @@ import {
   Plus,
   Search,
   SlidersHorizontal,
-  Eye,
-  Pencil,
 } from "lucide-react";
 import { ActionModal } from "@/components/ActionModal";
 import {
