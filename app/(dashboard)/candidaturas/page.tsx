@@ -1,6 +1,6 @@
 import {createClient} from "@/lib/supabase/server";
 import {revalidatePath} from "next/cache";
-import {Plus,Search,Trash2} from "lucide-react";
+import {Plus,Search} from "lucide-react";
 import {PageHeader,InitialAvatar} from "@/components/ModuleUI";
 import {ActionModal} from "@/components/ActionModal";
 import {ConfirmSubmitButton} from "@/components/ConfirmSubmitButton";
