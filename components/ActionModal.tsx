@@ -12,6 +12,7 @@ export function ActionModal({kind,title,children,triggerLabel}:{kind:Kind;title:
   <section className="record-modal" role="dialog" aria-modal="true" aria-label={title}>
    <header className="record-modal-head"><div><b>{kind==='edit'?'Editar':'Visualizar'} — {title}</b><span>{kind==='edit'?'Atualize as informações e salve as alterações.':'Informações completas do registro.'}</span></div><button type="button" className="icon-button" onClick={()=>setOpen(false)} aria-label="Fechar"><X size={18}/></button></header>
    <div className="record-modal-body">{children}</div>
+   <footer className="record-modal-footer"><button type="button" className="modal-cancel-button" onClick={()=>setOpen(false)}>Cancelar</button></footer>
   </section>
  </div>}</>
 }
