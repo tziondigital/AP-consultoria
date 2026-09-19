@@ -15,9 +15,7 @@ const money = (n: number) =>
 export default async function Financeiro() {
   async function criar(f: FormData) {
     "use server";
-    async function editar(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").update({valor:Number(f.get("valor")||0),percentual:Number(f.get("percentual")||0),data_vencimento:String(f.get("data_vencimento")||"")||null}).eq("id",String(f.get("id"))); revalidatePath("/financeiro");}
-  async function excluir(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").delete().eq("id",String(f.get("id"))); revalidatePath("/financeiro");}
-  const s = await createClient();
+    const s = await createClient();
     await s
       .from("financeiro")
       .insert({
@@ -28,7 +26,9 @@ export default async function Financeiro() {
       });
     revalidatePath("/financeiro");
   }
-  async function editar(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").update({valor:Number(f.get("valor")||0),percentual:Number(f.get("percentual")||0),data_vencimento:String(f.get("data_vencimento")||"")||null}).eq("id",String(f.get("id"))); revalidatePath("/financeiro");}\n  async function excluir(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").delete().eq("id",String(f.get("id"))); revalidatePath("/financeiro");}\n  async function baixar(f: FormData) {
+  async function editar(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").update({valor:Number(f.get("valor")||0),percentual:Number(f.get("percentual")||0),data_vencimento:String(f.get("data_vencimento")||"")||null}).eq("id",String(f.get("id"))); revalidatePath("/financeiro");}\n  async function excluir(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").delete().eq("id",String(f.get("id"))); revalidatePath("/financeiro");}\nasync function editar(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").update({valor:Number(f.get("valor")||0),percentual:Number(f.get("percentual")||0),data_vencimento:String(f.get("data_vencimento")||"")||null}).eq("id",String(f.get("id"))); revalidatePath("/financeiro");}
+  async function excluir(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").delete().eq("id",String(f.get("id"))); revalidatePath("/financeiro");}
+  async function baixar(f: FormData) {
     "use server";
     const s = await createClient();
     const pago = f.get("pago") === "true";
