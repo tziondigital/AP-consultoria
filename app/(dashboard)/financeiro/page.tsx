@@ -6,7 +6,6 @@ import {
   ReceiptText,
   ChartNoAxesCombined,
   Plus,
-  Pencil,
   Trash2,
 } from "lucide-react";
 import { ActionModal } from "@/components/ActionModal";
