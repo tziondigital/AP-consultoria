@@ -88,11 +88,11 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
   const all = rows || [];
   const query=(params.q||"").trim().toLocaleLowerCase("pt-BR");
   const list=all.filter((r:any)=>(!query||[r.numero_os,r.numero_nota,r.vagas?.cargo,r.vagas?.empresas?.nome].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR").includes(query))&&(!params.status||r.status===params.status));
-  const total = list.reduce((a: any, r: any) => a + Number(r.valor || 0), 0);
-  const paid = list
+  const total = all.reduce((a: any, r: any) => a + Number(r.valor || 0), 0);
+  const paid = all
     .filter((r: any) => r.pago)
     .reduce((a: any, r: any) => a + Number(r.valor || 0), 0);
-  const pending = list
+  const pending = all
     .filter((r: any) => !r.pago && r.status !== "cancelado")
     .reduce((a: any, r: any) => a + Number(r.valor || 0), 0);
   return (
