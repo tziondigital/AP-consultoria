@@ -17,7 +17,9 @@ import {
   PageHeader,
 } from "@/components/ModuleUI";
 import { ResumeActions } from "@/components/ResumeActions";
-export default async function Page() {
+type Params={q?:string;situacao?:string;pagina?:string};
+export default async function Page({searchParams}:{searchParams:Promise<Params>}) {
+  const params=await searchParams;
   async function criar(f: FormData) {
     "use server";
     const s = await createClient();
@@ -46,9 +48,12 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
       s.from("candidaturas").select("candidato_id,status,vagas(cargo)"),
       s.from("entrevistas").select("candidato_id,status"),
     ]);
-  const list: any[] = (rows || []) as any[],
+  const all: any[] = (rows || []) as any[],
     applications: any[] = (apps || []) as any[],
-    hired = applications.filter((x: any) => x.status === "contratado").length;
+    hired = applications.filter((x: any) => x.status === "contratado").length,
+    query=(params.q||"").trim().toLocaleLowerCase("pt-BR"),
+    filtered=all.filter((r:any)=>(!query||[r.nome,r.cargo,r.telefone,r.email].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR").includes(query))&&(!params.situacao||r.situacao===params.situacao)),
+    size=10,pages=Math.max(1,Math.ceil(filtered.length/size)),page=Math.min(pages,Math.max(1,Number(params.pagina)||1)),list=filtered.slice((page-1)*size,page*size);
   return (
     <section className="module-page">
       <PageHeader
@@ -58,7 +63,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
       <div className="module-kpis four">
         <KpiCard
           Icon={Users}
-          value={list.length}
+          value={all.length}
           label="Total de candidatos"
           note="↑ base de talentos"
         />
@@ -87,20 +92,12 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
         />
       </div>
       <div className="module-panel">
-        <div className="filterbar">
+        <form className="filterbar" method="get">
           <label className="searchbox">
             <Search size={15} />
-            <input placeholder="Buscar por nome, cargo, telefone ou e-mail..." />
+            <input name="q" defaultValue={params.q||""} placeholder="Buscar por nome, cargo, telefone ou e-mail..." />
           </label>
-          <select>
-            <option>Todos os processos</option>
-          </select>
-          <select>
-            <option>Todas as etapas</option>
-          </select>
-          <select>
-            <option>Todos os status</option>
-          </select>
+          <select name="situacao" defaultValue={params.situacao||""}><option value="">Todos os status</option><option value="disponivel">Disponível</option><option value="empregado">Empregado</option></select><button className="outline-button">Filtrar</button>
           <details className="action-popover">
             <summary>
               <Plus size={15} /> Novo candidato
@@ -119,7 +116,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
               <button className="primary-button">Cadastrar candidato</button>
             </form>
           </details>
-        </div>
+        </form>
         <div className="table-wrap">
           <table className="module-table">
             <thead>
@@ -134,7 +131,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
               </tr>
             </thead>
             <tbody>
-              {list.slice(0, 10).map((r: any, i: number) => {
+              {list.map((r: any, i: number) => {
                 const app = applications.find(
                   (x: any) => x.candidato_id === r.id,
                 );
@@ -190,7 +187,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
         </div>
         <div className="pagination">
           <span>
-            Mostrando {Math.min(10, list.length)} de {list.length} candidatos
+            Mostrando {filtered.length?(page-1)*size+1:0} a {Math.min(page*size,filtered.length)} de {filtered.length} candidatos
           </span>
           <b>1</b>
         </div>
