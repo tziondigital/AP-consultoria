@@ -18,7 +18,7 @@ export default async function Configuracoes() {
     "use server";
     const db = await createClient();
     const changes:Record<string,unknown>={updated_at:new Date().toISOString()};
-    for(const key of ["nome_empresa","cnpj","email","responsavel","endereco","idioma","fuso_horario","formato_data","formato_hora"])if(f.has(key))changes[key]=String(f.get(key)||"")||null;
+    for(const key of ["nome_empresa","cnpj","email","responsavel","endereco","idioma","fuso_horario","formato_data","formato_hora","banco","agencia","conta","chave_pix"])if(f.has(key))changes[key]=String(f.get(key)||"")||null;
     if(f.has("preferencias")){changes.email_entrevista=f.get("email_entrevista")==="on";changes.indicadores_dashboard=f.get("indicadores_dashboard")==="on";changes.modo_escuro=f.get("modo_escuro")==="on";}
     await db.from("configuracoes_sistema").update(changes).eq("id",true);
     revalidatePath("/configuracoes");
@@ -157,6 +157,11 @@ export default async function Configuracoes() {
               <input name="modo_escuro" type="checkbox" defaultChecked={config?.modo_escuro??false} /> Modo escuro
             </label>
           </div><button className="primary-button"><Save size={14}/> Salvar preferências</button>
+        </form>
+        <form className="module-panel settings-card" action={salvar}>
+          <div className="panel-heading"><b>Dados bancários para faturamento</b></div>
+          <div className="settings-form"><label>Banco<input name="banco" defaultValue={config?.banco||""}/></label><label>Agência<input name="agencia" defaultValue={config?.agencia||""}/></label><label>Conta<input name="conta" defaultValue={config?.conta||""}/></label><label>Chave PIX<input name="chave_pix" defaultValue={config?.chave_pix||""}/></label></div>
+          <button className="primary-button"><Save size={14}/> Salvar dados bancários</button>
         </form>
         <div className="module-panel settings-card">
           <div className="panel-heading">
