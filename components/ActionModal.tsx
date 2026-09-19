@@ -1,9 +1,9 @@
 'use client';
-import {useEffect,useState} from 'react';
+import {useEffect,useState,type ReactNode} from 'react';
 import {Eye,Pencil,X} from 'lucide-react';
 
 type Kind='view'|'edit';
-export function ActionModal({kind,title,children}:{kind:Kind;title:string;children:React.ReactNode}){
+export function ActionModal({kind,title,children}:{kind:Kind;title:string;children:ReactNode}){
  const [open,setOpen]=useState(false);
  useEffect(()=>{if(!open)return;const esc=(e:KeyboardEvent)=>{if(e.key==='Escape')setOpen(false)};document.addEventListener('keydown',esc);document.body.style.overflow='hidden';return()=>{document.removeEventListener('keydown',esc);document.body.style.overflow=''}},[open]);
  const Icon=kind==='edit'?Pencil:Eye;
