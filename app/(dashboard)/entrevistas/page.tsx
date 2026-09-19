@@ -18,6 +18,8 @@ const br = (v: string) =>
   });
 const days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 export default async function Page() {
+  async function excluir(f: FormData) {"use server";const s=await createClient();await s.from("entrevistas").delete().eq("id",String(f.get("id")));revalidatePath("/entrevistas");}
+  async function atualizar(f: FormData) {"use server";const s=await createClient();await s.from("entrevistas").update({status:String(f.get("status")),link:String(f.get("link")||"")||null}).eq("id",String(f.get("id")));revalidatePath("/entrevistas");}
   async function criar(f: FormData) {
     "use server";
     const s = await createClient(),
@@ -233,11 +235,7 @@ export default async function Page() {
                       </span>
                     </td>
                     <td>
-                      <div className="interview-actions">
-                        <Video size={14} />
-                        <Pencil size={14} />
-                        <X size={14} />
-                      </div>
+                      <div className="interview-actions">{r.link?<a href={r.link} target="_blank" rel="noreferrer"><Video size={14}/></a>:<Video size={14}/>}<details className="row-editor"><summary><Pencil size={14}/></summary><form action={atualizar}><input type="hidden" name="id" value={r.id}/><select name="status" defaultValue={r.status}><option value="agendada">Agendada</option><option value="confirmada">Confirmada</option><option value="realizada">Realizada</option><option value="nao_compareceu">Não compareceu</option></select><input name="link" defaultValue={r.link||""} placeholder="Link da reunião"/><button className="primary-button">Salvar</button></form></details><form action={excluir}><input type="hidden" name="id" value={r.id}/><button className="icon-button" title="Excluir"><X size={14}/></button></form></div>
                     </td>
                   </tr>
                 ))}
