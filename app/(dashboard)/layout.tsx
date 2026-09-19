@@ -1,2 +1,14 @@
-import {Sidebar} from '@/components/Sidebar';import {createClient} from '@/lib/supabase/server';import {redirect} from 'next/navigation';import {Bell,Search,ChevronDown,Menu} from 'lucide-react';
-export default async function DashboardLayout({children}:{children:React.ReactNode}){const s=await createClient();const{data:{user}}=await s.auth.getUser();if(!user)redirect('/login');const{data:profile}=await s.from('usuarios').select('nome,perfil,email').eq('id',user.id).single();const initials=(profile?.nome||profile?.email||'AP').split(' ').slice(0,2).map((x:string)=>x[0]).join('').toUpperCase();return <div className="shell"><Sidebar/><main className="main"><header className="topbar"><button className="menu-toggle" aria-label="Abrir ou fechar menu"><Menu size={19}/></button><div className="global-search"><Search size={16}/><input placeholder="Buscar vagas, candidatos, empresas..."/></div><div className="top-actions"><span className="notification-bell"><Bell size={18}/><i>1</i></span><div className="avatar">{initials}</div><div className="profile"><b>{profile?.nome||profile?.email}</b><span>{profile?.perfil||'Usuário'}</span></div><ChevronDown size={15}/><em>“Conectando talentos, gerando valor.”</em></div></header><div className="content">{children}</div></main></div>}
+import {DashboardShell} from '@/components/DashboardShell';
+import {createClient} from '@/lib/supabase/server';
+import {redirect} from 'next/navigation';
+import {label} from '@/lib/format';
+
+export default async function DashboardLayout({children}:{children:React.ReactNode}){
+  const s=await createClient();
+  const{data:{user}}=await s.auth.getUser();
+  if(!user)redirect('/login');
+  const{data:profile}=await s.from('usuarios').select('nome,perfil,email').eq('id',user.id).single();
+  const displayName=profile?.nome||profile?.email||'AP Consultoria';
+  const initials=displayName.split(' ').filter(Boolean).slice(0,2).map((x:string)=>x[0]).join('').toUpperCase();
+  return <DashboardShell initials={initials} name={displayName} role={label(profile?.perfil||'usuario')}>{children}</DashboardShell>
+}
