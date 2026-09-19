@@ -3,7 +3,7 @@ import {revalidatePath} from "next/cache";
 import {Plus,Search,Trash2} from "lucide-react";
 import {PageHeader,InitialAvatar} from "@/components/ModuleUI";
 import {ActionModal} from "@/components/ActionModal";
-const statuses=["novo","triagem","entrevista","aprovado","reprovado","desistiu","contratado"];
+const statuses=["novo","triagem","entrevista","aprovado","reprovado","desistiu"];
 const kanbanStatuses=["novo","triagem","entrevista","aprovado","contratado"];
 const labels:any={novo:"Novo",triagem:"Triagem",entrevista:"Entrevistas",aprovado:"Finalistas",reprovado:"Reprovado",desistiu:"Desistiu",contratado:"Contratados"};
 type Params={q?:string;status?:string;vaga?:string};
