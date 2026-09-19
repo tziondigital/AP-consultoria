@@ -185,12 +185,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
             </tbody>
           </table>
         </div>
-        <div className="pagination">
-          <span>
-            Mostrando {filtered.length?(page-1)*size+1:0} a {Math.min(page*size,filtered.length)} de {filtered.length} candidatos
-          </span>
-          <b>1</b>
-        </div>
+        <div className="pagination"><span>Mostrando {filtered.length?(page-1)*size+1:0} a {Math.min(page*size,filtered.length)} de {filtered.length} candidatos</span><div className="pagination-pages">{Array.from({length:pages},(_,idx)=>idx+1).map(n=><a key={n} className={n===page?"active":""} href={`/candidatos?q=${encodeURIComponent(params.q||"")}&situacao=${encodeURIComponent(params.situacao||"")}&pagina=${n}`}>{n}</a>)}</div></div>
       </div>
     </section>
   );
