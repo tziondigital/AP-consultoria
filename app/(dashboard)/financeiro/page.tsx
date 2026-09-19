@@ -15,7 +15,7 @@ import { EmptyRow, KpiCard, PageHeader } from "@/components/ModuleUI";
 const financeStatus=(r:any)=>r.status==="pago"||r.pago?"Pago":r.status==="vencido"?"Vencido":r.status==="cancelado"?"Cancelado":r.status==="parcial"||Number(r.valor_pago||0)>0?"Aguardando pagamento":r.numero_nota||r.data_emissao_nota||r.data_faturamento?"Faturado":"Aguardando faturamento";
 const money = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-type Params={q?:string;status?:string};
+type Params={q?:string;status?:string;pagina?:string};
 export default async function Financeiro({searchParams}:{searchParams:Promise<Params>}) {
   const params=await searchParams;
   async function criar(f: FormData) {
@@ -88,7 +88,9 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
   ]);
   const all = rows || [];
   const query=(params.q||"").trim().toLocaleLowerCase("pt-BR");
-  const list=all.filter((r:any)=>(!query||[r.numero_os,r.numero_nota,r.vagas?.cargo,r.vagas?.empresas?.nome].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR").includes(query))&&(!params.status||r.status===params.status));
+  const filtered=all.filter((r:any)=>(!query||[r.numero_os,r.numero_nota,r.vagas?.cargo,r.vagas?.empresas?.nome].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR").includes(query))&&(!params.status||r.status===params.status));
+  const pageSize=10,totalPages=Math.max(1,Math.ceil(filtered.length/pageSize)),page=Math.min(totalPages,Math.max(1,Number(params.pagina)||1)),list=filtered.slice((page-1)*pageSize,page*pageSize);
+  const pageHref=(n:number)=>`/financeiro?${new URLSearchParams({...(params.q?{q:params.q}:{}),...(params.status?{status:params.status}:{}),pagina:String(n)}).toString()}`;
   const total = all.reduce((a: any, r: any) => a + Number(r.valor || 0), 0);
   const paid = all
     .filter((r: any) => r.pago)
@@ -263,6 +265,7 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
             </tbody>
           </table>
         </div>
+        {filtered.length>pageSize&&<div className="pagination"><span>Mostrando {(page-1)*pageSize+1}–{Math.min(page*pageSize,filtered.length)} de {filtered.length} lançamentos</span><span>{page>1&&<Link className="outline-button" href={pageHref(page-1)}>Anterior</Link>}<b>{page} de {totalPages}</b>{page<totalPages&&<Link className="outline-button" href={pageHref(page+1)}>Próxima</Link>}</span></div>}
       </div>
     </section>
   );
