@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import {
-import { ActionModal } from "@/components/ActionModal";
   Building2,
   BriefcaseBusiness,
   Handshake,
@@ -11,6 +10,7 @@ import { ActionModal } from "@/components/ActionModal";
   Eye,
   Pencil,
 } from "lucide-react";
+import { ActionModal } from "@/components/ActionModal";
 import {
   EmptyRow,
   InitialAvatar,
