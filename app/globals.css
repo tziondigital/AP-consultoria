@@ -28,3 +28,14 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;background:var(--re
 
 /* Sidebar interativa — mantém o layout aprovado */
 .menu-toggle{width:34px;height:34px;border:0;background:transparent;color:#0759a8;display:grid;place-items:center;cursor:pointer;border-radius:7px;flex:0 0 auto}.menu-toggle:hover{background:#edf4fa}.topbar{gap:12px}.sidebar,.main{transition:width .2s ease,margin .2s ease}.sidebar.is-collapsed{width:72px!important;padding-left:8px!important;padding-right:8px!important}.sidebar.is-collapsed .brand{margin-left:-8px!important;margin-right:-8px!important}.sidebar.is-collapsed .brand-logo{width:58px!important;object-fit:contain!important}.sidebar.is-collapsed .nav a{justify-content:center!important;padding:0!important;gap:0!important}.sidebar.is-collapsed .nav a span{display:none!important}.sidebar.is-collapsed .nav-bottom{left:8px!important;right:8px!important}.sidebar.is-collapsed .nav a{position:relative}.sidebar.is-collapsed .nav a:hover:after{content:attr(href);position:absolute;left:58px;z-index:50;background:#082958;color:#fff;padding:6px 9px;border-radius:5px;font-size:10px;white-space:nowrap}.sidebar.is-collapsed+.main{min-width:0}.brand-message{display:none!important}.nav-bottom{bottom:16px!important}
+
+/* Modal padrão — ações Olho/Lápis */
+.record-modal-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(10,25,47,.48);display:flex;align-items:center;justify-content:center;padding:24px}
+.record-modal{width:min(920px,calc(100vw - 32px));max-height:88vh;background:#fff;border-radius:14px;box-shadow:0 24px 70px rgba(10,25,47,.24);overflow:hidden;display:flex;flex-direction:column}
+.record-modal-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 24px;border-bottom:1px solid #e5edf6}
+.record-modal-head>div{display:flex;flex-direction:column;gap:4px}.record-modal-head b{font-size:18px;color:#10233f}.record-modal-head span{font-size:13px;color:#6f8097}
+.record-modal-body{padding:24px;overflow:auto}.record-modal-body form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.record-modal-body form label{display:flex;flex-direction:column;gap:6px}.record-modal-body form textarea,.record-modal-body form .wide{grid-column:1/-1}
+.record-modal-body form button[type=submit],.record-modal-body form .primary-button{justify-self:end;grid-column:1/-1}
+.record-modal-body p{margin:8px 0;color:#53657c}.record-modal-body small{display:block;color:#7c8ba0;margin-top:4px}
+@media(max-width:700px){.record-modal-backdrop{padding:10px}.record-modal{width:100%;max-height:94vh}.record-modal-head,.record-modal-body{padding:16px}.record-modal-body form{grid-template-columns:1fr}}
