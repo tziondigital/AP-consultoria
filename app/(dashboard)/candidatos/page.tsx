@@ -18,10 +18,19 @@ import {
   PageHeader,
 } from "@/components/ModuleUI";
 import { ResumeActions } from "@/components/ResumeActions";
+import { Trash2 } from "lucide-react";
 export default async function Page() {
   async function criar(f: FormData) {
     "use server";
-    const s = await createClient();
+    async function editar(f: FormData) {
+    "use server"; const s=await createClient();
+    await s.from("candidatos").update({nome:String(f.get("nome")),email:String(f.get("email")||"")||null,telefone:String(f.get("telefone")||"")||null,cargo:String(f.get("cargo")||"")||null,situacao:String(f.get("situacao")||"disponivel")}).eq("id",String(f.get("id")));
+    revalidatePath("/candidatos");
+  }
+  async function excluir(f: FormData) {
+    "use server"; const s=await createClient(); await s.from("candidatos").delete().eq("id",String(f.get("id"))); revalidatePath("/candidatos");
+  }
+  const s = await createClient();
     await s
       .from("candidatos")
       .insert({
@@ -176,10 +185,8 @@ export default async function Page() {
                         <button>
                           <Eye size={14} />
                         </button>
-                        <button>
-                          <Pencil size={14} />
-                        </button>
-                        <ResumeActions candidateId={r.id} path={r.curriculo_path}/><button><MoreVertical size={14} /></button>
+                        <details className="row-editor"><summary><Pencil size={14}/></summary><form action={editar}><input type="hidden" name="id" value={r.id}/><input name="nome" defaultValue={r.nome} required/><input name="email" defaultValue={r.email||""} placeholder="E-mail"/><input name="telefone" defaultValue={r.telefone||""} placeholder="Telefone"/><input name="cargo" defaultValue={r.cargo||""} placeholder="Cargo"/><select name="situacao" defaultValue={r.situacao||"disponivel"}><option value="disponivel">Disponível</option><option value="empregado">Empregado</option></select><button className="primary-button">Salvar</button></form></details>
+                        <ResumeActions candidateId={r.id} path={r.curriculo_path}/><form action={excluir}><input type="hidden" name="id" value={r.id}/><button title="Excluir"><Trash2 size={14}/></button></form>
                       </div>
                     </td>
                   </tr>
