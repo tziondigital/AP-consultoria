@@ -28,7 +28,7 @@ export default async function Financeiro() {
       });
     revalidatePath("/financeiro");
   }
-  async function baixar(f: FormData) {
+  async function editar(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").update({valor:Number(f.get("valor")||0),percentual:Number(f.get("percentual")||0),data_vencimento:String(f.get("data_vencimento")||"")||null}).eq("id",String(f.get("id"))); revalidatePath("/financeiro");}\n  async function excluir(f: FormData) {"use server"; const s=await createClient(); await s.from("financeiro").delete().eq("id",String(f.get("id"))); revalidatePath("/financeiro");}\n  async function baixar(f: FormData) {
     "use server";
     const s = await createClient();
     const pago = f.get("pago") === "true";
