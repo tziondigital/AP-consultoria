@@ -47,7 +47,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
         .select("*")
         .order("created_at", { ascending: false }),
       s.from("candidaturas").select("id,candidato_id,status,origem,inscrito_em,vagas(cargo,empresas(nome)),avaliacoes(nota_tecnica,parecer,decisao,created_at)").order("inscrito_em",{ascending:false}),
-      s.from("entrevistas").select("candidato_id,status"),
+      s.from("entrevistas").select("candidato_id,status,data_hora,tipo,observacoes").order("data_hora",{ascending:false}),
     ]);
   const all: any[] = (rows || []) as any[],
     applications: any[] = (apps || []) as any[],
@@ -98,7 +98,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
             <Search size={15} />
             <input name="q" defaultValue={params.q||""} placeholder="Buscar por nome, cargo, telefone ou e-mail..." />
           </label>
-          <select name="situacao" defaultValue={params.situacao||""}><option value="">Todos os status</option><option value="disponivel">Disponível</option><option value="empregado">Empregado</option></select><button className="outline-button">Filtrar</button>
+          <select name="situacao" defaultValue={params.situacao||""}><option value="">Todos os status</option><option value="disponivel">Disponível</option><option value="empregado">Empregado</option></select><button className="outline-button">Filtrar</button>{(params.q||params.situacao)&&<Link className="outline-button" href="/candidatos">Limpar filtros</Link>}
           <details className="action-popover">
             <summary>
               <Plus size={15} /> Novo candidato
@@ -136,6 +136,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
                 const app = applications.find(
                   (x: any) => x.candidato_id === r.id,
                 );
+                const interview=(interviews||[]).find((x:any)=>x.candidato_id===r.id);
                 return (
                   <tr key={r.id}>
                     <td>
@@ -172,7 +173,7 @@ async function editar(f: FormData) {"use server"; const s=await createClient(); 
                     </td>
                     <td>
                       <div className="row-actions">
-                        <ActionModal kind="view" title={r.nome}><div><h3>{r.nome}</h3><p><strong>E-mail:</strong> {r.email||"—"}</p><p><strong>Telefone:</strong> {r.telefone||"—"}</p><p><strong>Cargo:</strong> {r.cargo||"—"}</p><p><strong>Cidade/UF:</strong> {[r.cidade,r.estado].filter(Boolean).join("/")||"—"}</p><p><strong>Situação:</strong> {r.situacao==="empregado"?"Empregado":"Disponível"}</p><p><strong>LinkedIn:</strong> {r.linkedin_url||"—"}</p><p><strong>Processo atual:</strong> {app?.vagas?.cargo||"—"} · {app?.vagas?.empresas?.nome||"—"}</p><p><strong>Etapa:</strong> {app?.status||"—"}</p><p><strong>Avaliação:</strong> {app?.avaliacoes?.[0]?.nota_tecnica?String(app.avaliacoes[0].nota_tecnica)+"/5":"—"}</p><p><strong>Parecer:</strong> {app?.avaliacoes?.[0]?.parecer||"—"}</p><p><strong>Observações:</strong> {r.observacoes||"—"}</p><ResumeActions candidateId={r.id} path={r.curriculo_path}/></div></ActionModal>
+                        <ActionModal kind="view" title={r.nome}><div><h3>{r.nome}</h3><p><strong>E-mail:</strong> {r.email||"—"}</p><p><strong>Telefone:</strong> {r.telefone||"—"}</p><p><strong>Cargo:</strong> {r.cargo||"—"}</p><p><strong>Cidade/UF:</strong> {[r.cidade,r.estado].filter(Boolean).join("/")||"—"}</p><p><strong>Situação:</strong> {r.situacao==="empregado"?"Empregado":"Disponível"}</p><p><strong>LinkedIn:</strong> {r.linkedin_url||"—"}</p><p><strong>Processo atual:</strong> {app?.vagas?.cargo||"—"} · {app?.vagas?.empresas?.nome||"—"}</p><p><strong>Etapa:</strong> {app?.status||"—"}</p><p><strong>Avaliação:</strong> {app?.avaliacoes?.[0]?.nota_tecnica?String(app.avaliacoes[0].nota_tecnica)+"/5":"—"}</p><p><strong>Parecer:</strong> {app?.avaliacoes?.[0]?.parecer||"—"}</p><p><strong>Entrevista:</strong> {interview?.data_hora?new Date(interview.data_hora).toLocaleString("pt-BR"):"—"}{interview?.tipo?` · ${interview.tipo}`:""}{interview?.status?` · ${interview.status}`:""}</p><p><strong>Observações da entrevista:</strong> {interview?.observacoes||"—"}</p><p><strong>Origem do processo:</strong> {app?.origem||"—"}</p><p><strong>Inscrição:</strong> {app?.inscrito_em?new Date(app.inscrito_em).toLocaleDateString("pt-BR"):"—"}</p><p><strong>Observações:</strong> {r.observacoes||"—"}</p><ResumeActions candidateId={r.id} path={r.curriculo_path}/></div></ActionModal>
                         <ActionModal kind="edit" title={r.nome}><form action={editar}><input type="hidden" name="id" value={r.id}/><label>Nome<input name="nome" defaultValue={r.nome} required/></label><label>E-mail<input name="email" defaultValue={r.email||""}/></label><label>Telefone<input name="telefone" defaultValue={r.telefone||""}/></label><label>Cargo<input name="cargo" defaultValue={r.cargo||""}/></label><label>Cidade<input name="cidade" defaultValue={r.cidade||""}/></label><label>UF<input name="estado" maxLength={2} defaultValue={r.estado||""}/></label><label>LinkedIn<input name="linkedin_url" type="url" defaultValue={r.linkedin_url||""}/></label><label className="wide">Observações<textarea name="observacoes" rows={4} defaultValue={r.observacoes||""}/></label><label>Situação<select name="situacao" defaultValue={r.situacao||"disponivel"}><option value="disponivel">Disponível</option><option value="empregado">Empregado</option></select></label><button className="primary-button">Salvar</button></form></ActionModal>
                         <ResumeActions candidateId={r.id} path={r.curriculo_path}/><form action={excluir}><input type="hidden" name="id" value={r.id}/><ConfirmSubmitButton/></form>
                       </div>
