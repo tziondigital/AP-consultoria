@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import {
@@ -184,7 +185,7 @@ export default async function Financeiro() {
             style={
               {
                 "--paid": `${total ? (paid / total) * 100 : 0}%`,
-              } as React.CSSProperties
+              } as CSSProperties
             }
           >
             <strong>{money(total)}</strong>
