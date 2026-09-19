@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import {
-import { ActionModal } from "@/components/ActionModal";
   BadgeDollarSign,
   WalletCards,
   ReceiptText,
@@ -10,6 +9,7 @@ import { ActionModal } from "@/components/ActionModal";
   Pencil,
   Trash2,
 } from "lucide-react";
+import { ActionModal } from "@/components/ActionModal";
 import { EmptyRow, KpiCard, PageHeader } from "@/components/ModuleUI";
 const money = (n: number) =>
   n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
