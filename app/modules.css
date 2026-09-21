@@ -756,80 +756,18 @@
   }
 }
 
-/* Unificação visual dos módulos no Design System AP 2026 */
-.module-page{max-width:1440px;color:var(--text-primary)}
-.module-header{min-height:88px;padding:8px 0 18px;gap:18px}
-.module-header h1{font:700 clamp(24px,2.4vw,30px)/1.2 var(--font-display);letter-spacing:-.02em;margin-bottom:6px}
-.module-header p{font-size:13px;line-height:1.5}
-.module-actions{align-items:center;flex-wrap:wrap}
-.module-kpis{gap:14px;margin-bottom:18px}
-.module-kpi{height:auto;min-height:108px;padding:18px}
-.module-kpi-icon{width:52px;height:52px;border-radius:14px}
-.module-kpi strong{font:700 25px/1 var(--font-display);font-variant-numeric:tabular-nums}
-.module-kpi b{font:600 12px var(--font-display);margin-top:7px;color:#334155}
-.module-kpi small{font-size:11px;color:var(--text-secondary);margin-top:5px}
-.module-panel{margin-bottom:18px;overflow:hidden}
-.filterbar{min-height:68px;padding:12px 16px;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--divider)}
-.filterbar select,.searchbox{min-height:44px!important;height:auto!important;border-radius:12px!important;font-size:13px!important}
-.searchbox{padding:0 14px!important;min-width:220px}
-.searchbox input{min-height:40px!important;border:0!important;padding:0!important;box-shadow:none!important}
-.panel-heading{min-height:52px;height:auto;padding:12px 16px;border-color:var(--divider)}
-.panel-heading b{font:600 14px var(--font-display);color:var(--brand-ink)}
-.panel-heading span{font-size:11px;color:var(--text-secondary)}
-.initial-avatar{width:34px;height:34px;font-size:10px}
-.entity-cell{gap:11px}.entity-cell small{font-size:11px;color:var(--text-secondary)}
-.row-actions{gap:6px;align-items:center}.row-actions button,.icon-button,.row-editor>summary{width:36px!important;height:36px!important}
-.settings-tabs{min-height:54px;height:auto;padding:0 16px;gap:24px}
-.settings-tabs>*{height:54px;font:600 12px var(--font-display)}
-.settings-tabs b{color:var(--brand);border-color:var(--brand)}
-.settings-kpis>div{height:auto;min-height:88px;padding:16px}
-.settings-form{gap:14px;padding:4px 18px 18px}.settings-form label{font-size:12px!important}
-.settings-form input,.settings-form select{margin-top:6px}
-.popover-form{border-radius:16px;box-shadow:0 18px 50px rgba(20,40,46,.16)}
-.process-filters{padding:14px;gap:12px}
-.process-filters select{height:auto;min-height:44px;border-color:var(--input-border);border-radius:12px;font-size:13px}
-.kanban-column{border-radius:14px;background:#f3f7f7!important}.kanban-card,.process-card{border-radius:12px;border-color:var(--border);box-shadow:0 2px 8px rgba(20,40,46,.05)}
-.finance-grid,.report-layout,.interview-layout,.process-bottom,.settings-grid{gap:18px}
-.chart-placeholder,.bar-summary,.report-bars,.source-report,.funnel{border-color:var(--divider)}
-.text-button{font-size:12px}
-@media(max-width:760px){
-  .module-header{min-height:0;padding:4px 0 16px}.module-header h1{font-size:24px}
-  .module-kpis{grid-template-columns:1fr!important}.filterbar{display:flex;align-items:stretch;overflow:visible}
-  .filterbar>*{width:100%;flex:none}.searchbox{min-width:0}.module-panel{border-radius:14px!important}
-  .module-table{min-width:760px}.pagination{align-items:flex-start;flex-direction:column}
-  .settings-form{grid-template-columns:1fr}.settings-form .span-2{grid-column:auto}
-}
-
-/* Correção compacta dos módulos */
-.module-header{min-height:72px;padding:4px 0 14px}
-.module-header h1{font-size:24px!important;line-height:1.15}.module-header p{font-size:12px!important}
-.module-kpis{gap:12px;margin-bottom:14px}
-.module-kpi{min-height:88px!important;padding:14px!important;gap:12px}
-.module-kpi-icon{width:44px!important;height:44px!important;border-radius:11px}
-.module-kpi strong{font-size:21px!important}.module-kpi b{font-size:10px!important}.module-kpi small{font-size:9px!important}
-.module-panel{margin-bottom:14px}
-.filterbar{min-height:56px!important;padding:9px 12px!important;gap:10px}
-.filterbar select,.searchbox{min-height:38px!important;font-size:11px!important}
-.searchbox{padding:0 11px!important}.searchbox input{min-height:34px!important;font-size:11px!important}
-.panel-heading{min-height:44px!important;padding:9px 12px}.panel-heading b{font-size:12px!important}.panel-heading span{font-size:9px!important}
-.initial-avatar{width:30px;height:30px;font-size:9px;flex:0 0 auto}
-.entity-cell small{font-size:9px}
-.row-actions button,.icon-button:not(.text-trigger),.row-editor>summary{width:32px!important;height:32px!important}
-.process-filters{padding:10px!important;gap:10px!important;grid-template-columns:minmax(150px,.9fr) minmax(150px,.9fr) minmax(220px,1.3fr) auto!important}
-.process-filters select{min-height:38px!important;font-size:11px!important}
-.kanban-panel .kanban-grid{gap:12px;padding:12px;grid-template-columns:repeat(5,minmax(210px,1fr))}
-.kanban-column{padding:10px!important;border-radius:12px!important;min-width:0}
-.kanban-title{margin-bottom:10px;font-size:11px}
-.kanban-card.process-card{grid-template-columns:30px minmax(0,1fr) 28px!important;gap:8px!important;align-items:center!important;padding:10px!important;min-height:70px}
-.process-card>div{min-width:0}.process-card>div>.text-trigger{max-width:100%}
-.process-card>div small{font-size:8px!important;line-height:1.25!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.process-card form{min-width:0}.process-card form button{width:28px;height:28px;padding:0}
-.settings-tabs{min-height:46px!important}.settings-tabs>*{height:46px!important;font-size:10px!important}
-.settings-kpis>div{min-height:76px!important;padding:12px!important}
-.settings-form{gap:10px;padding:4px 14px 14px}
-.popover-form{gap:10px!important}
-@media(max-width:1200px){.kanban-panel .kanban-grid{grid-template-columns:repeat(5,220px);overflow-x:auto}}
-@media(max-width:760px){
-  .module-header{min-height:0}.module-header h1{font-size:22px!important}
-  .process-filters{display:flex!important}.kanban-panel .kanban-grid{grid-template-columns:repeat(5,230px)}
+/* Gatilho textual usado nos cards do Kanban: não herda o botão circular de ícone. */
+.icon-button.text-trigger {
+  width: auto;
+  height: auto;
+  min-width: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  display: block;
+  text-align: left;
+  color: #0761bd;
+  font-size: 10px;
+  line-height: 1.25;
+  font-weight: 700;
 }
