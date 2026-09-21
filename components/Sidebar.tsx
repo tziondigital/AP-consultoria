@@ -37,12 +37,14 @@ export function Sidebar({ collapsed=false }: { collapsed?: boolean }) {
           height={86}
         />
       </div>
-      <nav className="nav">
+      <nav className="nav" id="main-navigation" aria-label="Navegação principal">
         {items.map(([href, label, Icon]) => (
           <Link
             className={p.startsWith(href) ? "active" : ""}
             key={href}
             href={href}
+            aria-current={p.startsWith(href) ? "page" : undefined}
+            title={collapsed?label:undefined}
           >
             <Icon size={17} />
             <span>{label}</span>
@@ -53,6 +55,8 @@ export function Sidebar({ collapsed=false }: { collapsed?: boolean }) {
         <Link
           className={p.startsWith("/usuarios") ? "active" : ""}
           href="/usuarios"
+          aria-current={p.startsWith("/usuarios") ? "page" : undefined}
+          title={collapsed?"Usuários":undefined}
         >
           <Users size={17} />
           <span>Usuários</span>
@@ -60,6 +64,8 @@ export function Sidebar({ collapsed=false }: { collapsed?: boolean }) {
         <Link
           className={p.startsWith("/configuracoes") ? "active" : ""}
           href="/configuracoes"
+          aria-current={p.startsWith("/configuracoes") ? "page" : undefined}
+          title={collapsed?"Configurações":undefined}
         >
           <Settings size={17} />
           <span>Configurações</span>

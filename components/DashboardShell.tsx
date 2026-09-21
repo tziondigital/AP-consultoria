@@ -11,7 +11,7 @@ export function DashboardShell({children,userId,unread,initials,name,role}:{chil
     <Sidebar collapsed={collapsed}/>
     <main className="main">
       <header className="topbar">
-        <button className="menu-toggle" type="button" aria-label={collapsed?"Expandir menu":"Recolher menu"} onClick={()=>setCollapsed(v=>!v)}><Menu size={19}/></button>
+        <button className="menu-toggle" type="button" aria-label={collapsed?"Expandir menu":"Recolher menu"} aria-expanded={!collapsed} aria-controls="main-navigation" onClick={()=>setCollapsed(v=>!v)}><Menu size={19}/></button>
         <GlobalSearch/>
         <div className="top-actions">
           <NotificationBell userId={userId} unread={unread}/>
