@@ -177,3 +177,40 @@ tbody tr:hover{background:#fbfdfd}
 }
 
 .pagination-pages{display:flex;gap:6px;align-items:center}.pagination-pages a{min-width:30px;height:30px;display:grid;place-items:center;border:1px solid #d8e3ee;border-radius:7px;color:inherit;text-decoration:none;font-size:12px}.pagination-pages a:hover{background:#f5f8fb}.pagination-pages a.active{font-weight:700;border-color:#aabed2;background:#eef5fb}.confirm-modal{width:min(480px,calc(100vw - 32px))}.confirm-modal .record-modal-footer{gap:8px}
+
+/* Correção de densidade visual — referência compacta enviada */
+body{font-size:12px!important}
+.content{padding:18px 20px!important}
+.topbar{height:62px!important}
+.global-search{height:36px!important;min-height:36px!important}
+.global-search input{min-height:34px!important;font-size:12px!important;padding:0!important}
+.page-title{font-size:24px!important}
+.button,.primary-button,.login-submit,.action-popover>summary{min-height:38px!important;padding:8px 14px!important;border-radius:10px!important;font-size:12px!important}
+.outline-button,.small-button,.modal-cancel-button,.danger-button{min-height:36px!important;padding:7px 13px!important;border-radius:10px!important;font-size:12px!important}
+input,select,textarea,.input,.field,.field-group input,.field-group select{min-height:38px!important;padding:8px 12px!important;border-radius:10px!important;font-size:13px!important}
+label,.label,.field-group label{font-size:11px!important}
+input[type=checkbox],input[type=radio]{min-height:auto!important}
+.card{padding:16px}
+.badge,.status-chip,.role-chip,.pill,.vacancy-stage{font-size:10px!important;padding:3px 8px!important}
+table,.module-table{font-size:11px!important}
+th,.module-table th{font-size:9px!important}
+th,td,.module-table th,.module-table td{min-height:42px;padding:10px 12px!important}
+.pagination{min-height:46px!important;padding:8px 12px!important;font-size:10px!important}
+.record-modal{width:min(800px,calc(100vw - 32px))!important;max-width:800px!important;overflow:hidden!important}
+.record-modal-head{padding:14px 20px!important}.record-modal-head b{font-size:15px!important}.record-modal-head span{font-size:11px!important}
+.record-modal-body{padding:18px 20px!important;overflow-x:hidden!important}
+.record-modal-body form{width:100%!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px 14px!important}
+.record-modal-body form>*{min-width:0!important}
+.record-modal-body input,.record-modal-body select,.record-modal-body textarea{width:100%!important;max-width:100%!important}
+.record-modal-body form button[type=submit],.record-modal-body form .primary-button{max-width:100%;white-space:normal}
+.record-modal-body p{font-size:12px!important;line-height:18px!important;padding:7px 0!important}
+.record-modal-footer{padding:10px 20px!important}
+.confirm-modal{max-width:480px!important}
+.icon-button.text-trigger{width:auto!important;min-width:0!important;height:auto!important;min-height:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:var(--brand-700)!important;font:600 12px/1.25 var(--font-display)!important;text-align:left!important;display:block!important}
+.icon-button.text-trigger:hover{background:transparent!important;color:var(--brand-900)!important}
+.icon-button.text-trigger span{display:block;overflow-wrap:anywhere}
+@media(max-width:700px){
+  input,select,textarea{min-height:44px!important;font-size:16px!important}
+  button,.button,.primary-button,.outline-button,.danger-button{min-height:44px!important}
+  .record-modal-body form{grid-template-columns:1fr!important}
+}
