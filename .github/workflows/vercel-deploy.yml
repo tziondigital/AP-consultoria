@@ -1,8 +1,6 @@
-name: Deploy to Vercel
+name: Emergency Production Deploy
 
 on:
-  push:
-    branches: [tziondigital]
   workflow_dispatch:
 
 jobs:
@@ -10,17 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - name: Checkout
+      - name: Checkout main
         uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: npm
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Quality checks
-        run: npm run typecheck && npm run build
-      - name: Deploy
+        run: npm run typecheck && npm run lint && npm run build
+      - name: Deploy production
         run: npx vercel deploy --prod --token="$VERCEL_TOKEN" --yes
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
