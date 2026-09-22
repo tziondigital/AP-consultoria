@@ -2,7 +2,6 @@ import { revalidatePath } from "next/cache";
 import {
   BriefcaseBusiness,
   CheckCircle2,
-  Plus,
   Search,
   UserRound,
   Users,
@@ -19,11 +18,14 @@ export default async function Page() {
   async function mover(f: FormData) {
     "use server";
     const s = await createClient();
-    await s
+    const {error}=await s
       .from("candidaturas")
       .update({ status: String(f.get("status")) })
       .eq("id", String(f.get("id")));
+    if(error)throw new Error(error.message);
     revalidatePath("/kanban");
+    revalidatePath("/candidaturas");
+    revalidatePath("/dashboard");
   }
   const s = await createClient();
   const [{ data: rows }, { data: vagas }] = await Promise.all([
@@ -71,27 +73,15 @@ export default async function Page() {
           tone="green"
         />
       </div>
-      <div className="module-panel process-filters">
-        <select>
+      <form className="module-panel process-filters" action="/candidaturas" method="get">
+        <select name="vaga">
           <option>Todas as vagas</option>
         </select>
-        <select>
-          <option>Todas as empresas</option>
-        </select>
-        <select>
-          <option>Todas as etapas</option>
-        </select>
-        <select>
-          <option>Todos os responsáveis</option>
-        </select>
-        <label className="searchbox">
-          <Search size={14} />
-          <input placeholder="Buscar candidato..." />
-        </label>
-        <button className="primary-button">
-          <Plus size={15} /> Novo processo
-        </button>
-      </div>
+        <select disabled aria-label="Empresa"><option>Todas as empresas</option></select>
+        <select name="status"><option value="">Todas as etapas</option><option value="novo">Recebidos</option><option value="triagem">Triagem</option><option value="entrevista">Em Entrevista</option><option value="aprovado">Finalistas</option><option value="contratado">Contratados</option></select>
+        <label className="searchbox"><Search size={14}/><input name="q" placeholder="Buscar candidato..." /></label>
+        <button className="primary-button" type="submit"><Search size={15}/> Abrir processos</button>
+      </form>
       <div className="module-panel kanban-panel">
         <div className="panel-heading">
           <b>
@@ -148,7 +138,7 @@ export default async function Page() {
           <div className="module-panel vacancy-sheet">
             <div className="panel-heading">
               <b>Ficha da Vaga</b>
-              <button className="primary-button">Editar vaga</button>
+              <a className="primary-button" href="/vagas">Editar vaga</a>
             </div>
             <div className="sheet-tabs">
               Resumo　 Candidatos　 Entrevistas　 Avaliações　 Financeiro　
@@ -187,7 +177,7 @@ export default async function Page() {
           <div className="module-panel candidate-review">
             <div className="panel-heading">
               <b>Avaliação de Candidato</b>
-              <span>Ver currículo</span>
+              <a href="/candidatos">Ver candidato</a>
             </div>
             <h3>{list[0].candidatos?.nome}</h3>
             <p>
@@ -203,10 +193,7 @@ export default async function Page() {
               Parecer final
               <textarea defaultValue="Candidato com bom perfil, demonstrou interesse e aderência à vaga." />
             </label>
-            <div className="review-actions">
-              <button>✕ Reprovar</button>
-              <button>✓ Aprovar</button>
-            </div>
+            <div className="review-actions"><a href="/avaliacoes">Abrir avaliação</a></div>
           </div>
         </div>
       )}
