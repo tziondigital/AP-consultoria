@@ -150,7 +150,7 @@ export default async function Empresas({searchParams}:{searchParams:Promise<{q?:
                     <div className="row-actions">
                       <ActionModal kind="view" title={r.nome}><div><b>{r.nome}</b><small>{r.razao_social||"Razão social não informada"}</small><p><strong>CNPJ:</strong> {r.cnpj||"—"}</p><p><strong>Contato:</strong> {r.contato||"—"}</p><p><strong>E-mail:</strong> {r.email||"—"}</p><p><strong>Telefone:</strong> {r.telefone||"—"}</p><p><strong>Vagas:</strong> {r.vagas?.length||0}</p></div></ActionModal>
                       <ActionModal kind="edit" title={r.nome}><form action={editar}><input type="hidden" name="id" value={r.id}/><label>Nome<input name="nome" defaultValue={r.nome} required/></label><label>Razão social<input name="razao_social" defaultValue={r.razao_social||""}/></label><label>CNPJ<input name="cnpj" defaultValue={r.cnpj||""}/></label><label>Segmento<input name="segmento" defaultValue={r.segmento||""}/></label><label>Contato<input name="contato" defaultValue={r.contato||""}/></label><label>E-mail<input name="email" type="email" defaultValue={r.email||""}/></label><label>Telefone<input name="telefone" defaultValue={r.telefone||""}/></label><label>Status<select name="ativo" defaultValue={String(r.ativo)}><option value="true">Ativa</option><option value="false">Inativa</option></select></label><button className="primary-button">Salvar alterações</button></form></ActionModal>
-                      <button aria-label="Mais ações">⋮</button>
+                      
                     </div>
                   </td>
                 </tr>

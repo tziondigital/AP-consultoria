@@ -149,11 +149,7 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
           </div>
           <div className="calendar-toolbar">
             <b>Setembro de 2026</b>
-            <span>
-              <button>Dia</button>
-              <button className="active">Semana</button>
-              <button>Mês</button>
-            </span>
+            <span className="status-chip neutral">Visão semanal</span>
           </div>
           <div className="week-grid">
             <div className="time-col">
@@ -197,7 +193,7 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
         <div className="module-panel next-interviews">
           <div className="panel-heading">
             <b>Próximas entrevistas</b>
-            <span>Ver agenda completa →</span>
+            <span>Agenda atual</span>
           </div>
           <div className="table-wrap">
             <table className="module-table">
