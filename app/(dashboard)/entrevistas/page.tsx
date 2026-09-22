@@ -20,8 +20,8 @@ const days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 type Params={status?:string;q?:string};
 export default async function Page({searchParams}:{searchParams:Promise<Params>}) {
   const params=await searchParams;
-  async function excluir(f: FormData) {"use server";const s=await createClient();await s.from("entrevistas").delete().eq("id",String(f.get("id")));revalidatePath("/entrevistas");}
-  async function atualizar(f: FormData) {"use server";const s=await createClient();await s.from("entrevistas").update({status:String(f.get("status")),link:String(f.get("link")||"")||null,duracao_minutos:Number(f.get("duracao_minutos")||45),observacoes:String(f.get("observacoes")||"")||null}).eq("id",String(f.get("id")));revalidatePath("/entrevistas");}
+  async function excluir(f: FormData) {"use server";const s=await createClient();const {error}=await s.from("entrevistas").delete().eq("id",String(f.get("id")));if(error)throw new Error(error.message);revalidatePath("/entrevistas");revalidatePath("/dashboard");revalidatePath("/candidaturas");}
+  async function atualizar(f: FormData) {"use server";const s=await createClient();const {error}=await s.from("entrevistas").update({status:String(f.get("status")),link:String(f.get("link")||"")||null,duracao_minutos:Number(f.get("duracao_minutos")||45),observacoes:String(f.get("observacoes")||"")||null}).eq("id",String(f.get("id")));if(error)throw new Error(error.message);revalidatePath("/entrevistas");revalidatePath("/dashboard");revalidatePath("/candidaturas");}
   async function criar(f: FormData) {
     "use server";
     const s = await createClient(),
@@ -32,7 +32,7 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
       .eq("id", id)
       .single();
     if (c) {
-      const { data: e } = await s
+      const { data: e, error:insertError } = await s
         .from("entrevistas")
         .insert({
           candidatura_id: id,
@@ -44,6 +44,7 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
         })
         .select("id")
         .single();
+      if(insertError)throw new Error(insertError.message);
       const person = Array.isArray(c.candidatos)
         ? c.candidatos[0]
         : c.candidatos;
@@ -53,6 +54,8 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
         });
     }
     revalidatePath("/entrevistas");
+    revalidatePath("/dashboard");
+    revalidatePath("/candidaturas");
   }
   const s = await createClient();
   const [{ data: rows }, { data: cands }] = await Promise.all([

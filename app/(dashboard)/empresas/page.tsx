@@ -21,7 +21,7 @@ export default async function Empresas({searchParams}:{searchParams:Promise<{q?:
   async function criar(f: FormData) {
     "use server";
     const s = await createClient();
-    await s
+    const {error}=await s
       .from("empresas")
       .insert({
         nome: String(f.get("nome")),
@@ -30,10 +30,12 @@ export default async function Empresas({searchParams}:{searchParams:Promise<{q?:
         contato: String(f.get("contato") || "") || null,
         email: String(f.get("email") || "") || null,
         telefone: String(f.get("telefone") || "") || null,
+        segmento: String(f.get("segmento") || "") || null,
       });
+    if(error)throw new Error(error.message);
     revalidatePath("/empresas");
   }
-  async function editar(f:FormData){"use server";const s=await createClient();await s.from("empresas").update({nome:String(f.get("nome")),razao_social:String(f.get("razao_social")||"")||null,cnpj:String(f.get("cnpj")||"")||null,segmento:String(f.get("segmento")||"")||null,contato:String(f.get("contato")||"")||null,email:String(f.get("email")||"")||null,telefone:String(f.get("telefone")||"")||null,ativo:f.get("ativo")==="true"}).eq("id",String(f.get("id")));revalidatePath("/empresas")}
+  async function editar(f:FormData){"use server";const s=await createClient();const {error}=await s.from("empresas").update({nome:String(f.get("nome")),razao_social:String(f.get("razao_social")||"")||null,cnpj:String(f.get("cnpj")||"")||null,segmento:String(f.get("segmento")||"")||null,contato:String(f.get("contato")||"")||null,email:String(f.get("email")||"")||null,telefone:String(f.get("telefone")||"")||null,ativo:f.get("ativo")==="true"}).eq("id",String(f.get("id")));if(error)throw new Error(error.message);revalidatePath("/empresas");revalidatePath("/vagas");revalidatePath("/dashboard")}
   const s = await createClient();
   const { data: rows, error } = await s
     .from("empresas")
@@ -60,6 +62,7 @@ export default async function Empresas({searchParams}:{searchParams:Promise<{q?:
               <input name="nome" placeholder="Nome fantasia" required />
               <input name="razao_social" placeholder="Razão social" />
               <input name="cnpj" placeholder="CNPJ" />
+              <input name="segmento" placeholder="Segmento" />
               <input name="contato" placeholder="Responsável" />
               <input name="email" type="email" placeholder="E-mail" />
               <input name="telefone" placeholder="Telefone" />

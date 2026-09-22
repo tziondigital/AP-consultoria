@@ -24,7 +24,7 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
   async function criar(f: FormData) {
     "use server";
     const s = await createClient();
-    await s
+    const {error}=await s
       .from("candidatos")
       .insert({
         nome: String(f.get("nome")),
@@ -35,10 +35,12 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
         cargo: String(f.get("cargo") || "") || null,
         situacao: String(f.get("situacao") || "disponivel"),
       });
+    if(error)throw new Error(error.message);
     revalidatePath("/candidatos");
+    revalidatePath("/dashboard");
   }
-async function editar(f: FormData) {"use server"; const s=await createClient(); await s.from("candidatos").update({nome:String(f.get("nome")),email:String(f.get("email")||"")||null,telefone:String(f.get("telefone")||"")||null,cargo:String(f.get("cargo")||"")||null,cidade:String(f.get("cidade")||"")||null,estado:String(f.get("estado")||"")||null,linkedin_url:String(f.get("linkedin_url")||"")||null,observacoes:String(f.get("observacoes")||"")||null,situacao:String(f.get("situacao")||"disponivel")}).eq("id",String(f.get("id"))); revalidatePath("/candidatos");}
-  async function excluir(f: FormData) {"use server"; const s=await createClient(); await s.from("candidatos").delete().eq("id",String(f.get("id"))); revalidatePath("/candidatos");}
+async function editar(f: FormData) {"use server"; const s=await createClient(); const {error}=await s.from("candidatos").update({nome:String(f.get("nome")),email:String(f.get("email")||"")||null,telefone:String(f.get("telefone")||"")||null,cargo:String(f.get("cargo")||"")||null,cidade:String(f.get("cidade")||"")||null,estado:String(f.get("estado")||"")||null,linkedin_url:String(f.get("linkedin_url")||"")||null,observacoes:String(f.get("observacoes")||"")||null,situacao:String(f.get("situacao")||"disponivel")}).eq("id",String(f.get("id"))); if(error)throw new Error(error.message); revalidatePath("/candidatos");revalidatePath("/candidaturas");revalidatePath("/dashboard");}
+  async function excluir(f: FormData) {"use server"; const s=await createClient(); const {error}=await s.from("candidatos").delete().eq("id",String(f.get("id"))); if(error)throw new Error(error.message); revalidatePath("/candidatos");revalidatePath("/candidaturas");revalidatePath("/dashboard");}
   const s = await createClient();
   const [{ data: rows }, { data: apps }, { data: interviews }] =
     await Promise.all([

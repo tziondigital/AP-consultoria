@@ -22,7 +22,7 @@
 .user-editor form > label {
   display: grid;
   gap: 4px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 .user-editor input,
@@ -42,7 +42,7 @@
   padding: 9px;
 }
 .user-editor legend {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 .user-editor .company-check {
@@ -86,7 +86,7 @@
   color: #4c6480;
 }
 .notification-list small {
-  font-size: 9px;
+  font-size: 12px;
   color: #71859c;
 }
 @media (max-width: 600px) {
@@ -139,7 +139,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  font: 700 11px/1 inherit;
+  font: 700 13px/1 inherit;
   cursor: pointer;
 }
 .primary-button:disabled {
@@ -156,7 +156,7 @@
   align-items: center;
   gap: 7px;
   font-weight: 700;
-  font-size: 10px;
+  font-size: 13px;
 }
 .action-popover {
   position: relative;
@@ -288,14 +288,14 @@
 .module-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 10px;
+  font-size: 13px;
 }
 .module-table th {
   height: 42px;
   background: #edf4fa;
   color: #163d68;
   text-align: left;
-  font-size: 9px;
+  font-size: 12px;
   padding: 0 14px;
 }
 .module-table td {
@@ -313,7 +313,7 @@
   display: block;
 }
 .entity-cell small {
-  font-size: 8px;
+  font-size: 12px;
   color: #71859c;
   margin-top: 3px;
 }
@@ -324,7 +324,7 @@
   display: grid;
   place-items: center;
   color: #fff;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 800;
 }
 .status-chip,
@@ -334,7 +334,7 @@
   min-width: 58px;
   padding: 4px 9px;
   border-radius: 99px;
-  font-size: 8px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: capitalize;
 }
@@ -412,7 +412,7 @@
   align-items: center;
   justify-content: space-between;
   color: #607690;
-  font-size: 9px;
+  font-size: 12px;
 }
 .pagination b {
   width: 28px;
@@ -438,7 +438,7 @@
   justify-content: space-between;
 }
 .panel-heading span {
-  font-size: 9px;
+  font-size: 12px;
   color: #71859c;
 }
 .finance-grid {
@@ -490,7 +490,7 @@
   border: 0;
   background: none;
   color: #075fb9;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 .report-layout {
@@ -618,7 +618,7 @@
   color: #0761bd;
 }
 .settings-kpis small {
-  font-size: 8px;
+  font-size: 12px;
   color: #71859c;
 }
 .settings-grid {
@@ -648,7 +648,7 @@
   padding: 0 16px 12px;
 }
 .settings-form label {
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 .settings-form input,
@@ -694,7 +694,7 @@
   border-radius: 6px;
   background: #fff;
   color: #c72c39;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 700;
 }
 .info-note {

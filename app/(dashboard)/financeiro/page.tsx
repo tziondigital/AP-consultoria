@@ -21,7 +21,7 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
   async function criar(f: FormData) {
     "use server";
     const s = await createClient();
-    await s
+    const {error}=await s
       .from("financeiro")
       .insert({
         vaga_id: String(f.get("vaga_id")),
@@ -29,12 +29,14 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
         percentual: Number(f.get("percentual") || 0),
         data_vencimento: String(f.get("data_vencimento") || "") || null,
       });
+    if(error)throw new Error(error.message);
     revalidatePath("/financeiro");
+    revalidatePath("/dashboard");
   }
   async function editar(f: FormData) {
     "use server";
     const s = await createClient();
-    await s.from("financeiro").update({
+    const {error}=await s.from("financeiro").update({
       valor: Number(f.get("valor") || 0),
       percentual: Number(f.get("percentual") || 0),
       data_vencimento: String(f.get("data_vencimento") || "") || null,
@@ -45,12 +47,13 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
       forma_pagamento: String(f.get("forma_pagamento")||"")||null,
       observacoes: String(f.get("observacoes")||"")||null,
     }).eq("id", String(f.get("id")));
+    if(error)throw new Error(error.message);
     revalidatePath("/financeiro");
   }
   async function excluir(f: FormData) {
     "use server";
     const s = await createClient();
-    await s.from("financeiro").delete().eq("id", String(f.get("id")));
+    const {error}=await s.from("financeiro").delete().eq("id", String(f.get("id")));if(error)throw new Error(error.message);
     revalidatePath("/financeiro");
   }
   async function anexar(f: FormData) {
@@ -59,13 +62,13 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
     if(!(file instanceof File)||!file.size)return;
     const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"_"),target=`${id}/${tipo}-${Date.now()}-${safe}`;
     const {error}=await s.storage.from("financeiro").upload(target,file,{contentType:file.type||"application/octet-stream",upsert:false});if(error)throw new Error(error.message);
-    await s.from("financeiro").update(tipo==="nota"?{nota_fiscal_path:target}:{comprovante_path:target}).eq("id",id);revalidatePath("/financeiro");
+    const {error:updateError}=await s.from("financeiro").update(tipo==="nota"?{nota_fiscal_path:target}:{comprovante_path:target}).eq("id",id);if(updateError)throw new Error(updateError.message);revalidatePath("/financeiro");
   }
   async function baixar(f: FormData) {
     "use server";
     const s = await createClient();
     const pago = f.get("pago") === "true";
-    await s
+    const {error}=await s
       .from("financeiro")
       .update({
         pago,
@@ -73,6 +76,7 @@ export default async function Financeiro({searchParams}:{searchParams:Promise<Pa
         data_pagamento: pago ? new Date().toISOString().slice(0, 10) : null,
       })
       .eq("id", String(f.get("id")));
+    if(error)throw new Error(error.message);
     revalidatePath("/financeiro");
   }
   const s = await createClient();
