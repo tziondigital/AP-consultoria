@@ -20,8 +20,10 @@ export default async function Configuracoes() {
     const changes:Record<string,unknown>={updated_at:new Date().toISOString()};
     for(const key of ["nome_empresa","cnpj","email","responsavel","endereco","idioma","fuso_horario","formato_data","formato_hora","banco","agencia","conta","chave_pix"])if(f.has(key))changes[key]=String(f.get(key)||"")||null;
     if(f.has("preferencias")){changes.email_entrevista=f.get("email_entrevista")==="on";changes.indicadores_dashboard=f.get("indicadores_dashboard")==="on";changes.modo_escuro=f.get("modo_escuro")==="on";}
-    await db.from("configuracoes_sistema").update(changes).eq("id",true);
+    const {error}=await db.from("configuracoes_sistema").update(changes).eq("id",true);
+    if(error)throw new Error(error.message);
     revalidatePath("/configuracoes");
+    revalidatePath("/dashboard");
   }
   const s = await createClient();
   const {
