@@ -4,8 +4,8 @@ import {Bell,CheckCheck} from 'lucide-react';
 import {PageHeader} from '@/components/ModuleUI';
 
 export default async function Notificacoes(){
-  async function marcarLida(f:FormData){'use server';const s=await createClient();await s.from('notificacoes').update({lida:true}).eq('id',String(f.get('id')));revalidatePath('/notificacoes')}
-  async function marcarTodas(){'use server';const s=await createClient();const{data:{user}}=await s.auth.getUser();if(user)await s.from('notificacoes').update({lida:true}).eq('usuario_id',user.id).eq('lida',false);revalidatePath('/notificacoes')}
+  async function marcarLida(f:FormData){'use server';const s=await createClient();const {error}=await s.from('notificacoes').update({lida:true}).eq('id',String(f.get('id')));if(error)throw new Error(error.message);revalidatePath('/notificacoes')}
+  async function marcarTodas(){'use server';const s=await createClient();const{data:{user}}=await s.auth.getUser();if(user){const {error}=await s.from('notificacoes').update({lida:true}).eq('usuario_id',user.id).eq('lida',false);if(error)throw new Error(error.message)}revalidatePath('/notificacoes')}
   const s=await createClient();const{data:{user}}=await s.auth.getUser();
   const{data:rows,error}=await s.from('notificacoes').select('*').eq('usuario_id',user!.id).order('created_at',{ascending:false}).limit(100);
   const unread=(rows||[]).filter((x:any)=>!x.lida).length;
