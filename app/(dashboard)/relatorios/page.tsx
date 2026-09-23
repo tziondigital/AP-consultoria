@@ -193,7 +193,7 @@ export default async function Relatorios({searchParams}:{searchParams:Promise<{e
       </div>
       <div className="report-layout report-secondary">
         <div className="module-panel"><div className="panel-heading"><b>Vagas por status</b></div><div className="source-report"><div className="donut-summary"><strong>{(vagas||[]).length}</strong><small>vagas</small></div><div>{[['Abertas','rascunho'],['Em andamento','em_andamento'],['Aguardando aprovação','congelada'],['Fechadas','completada']].map(([label,status])=><p key={status}><span>{label}</span><b>{(vagas||[]).filter((v:any)=>v.status===status).length}</b></p>)}</div></div></div>
-        <div className="module-panel"><div className="panel-heading"><b>Tempo médio por etapa (dias)</b></div><div className="stage-time">{[['Triagem',3],['Entrevista',5],['Finalistas',7],['Contratação',Math.max(avg,1)]].map(([label,value]:any)=><p key={label}><span>{label}</span><i><b style={{width:`${Math.min(100,value/Math.max(avg,14)*100)}%`}}/></i><strong>{value}</strong></p>)}</div></div>
+        <div className="module-panel"><div className="panel-heading"><b>Tempo médio por etapa (dias)</b></div><div className="module-empty"><strong>Histórico por etapa ainda insuficiente.</strong><span>O tempo total de contratação acima usa dados reais; esta decomposição será exibida quando houver histórico de movimentações.</span></div></div>
         <div className="module-panel"><div className="panel-heading"><b>Satisfação dos clientes</b></div><div className="module-empty"><strong>Sem pesquisa de satisfação integrada.</strong><span>Este indicador será exibido quando houver dados reais disponíveis no banco.</span></div></div>
       </div>
       <div className="module-panel">
