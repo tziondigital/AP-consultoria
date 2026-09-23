@@ -28,16 +28,18 @@ export default async function Page() {
     revalidatePath("/dashboard");
   }
   const s = await createClient();
-  const [{ data: rows }, { data: vagas }] = await Promise.all([
+  const [{ data: rows }, { data: vagas }, { data: avaliacoes }] = await Promise.all([
     s
       .from("candidaturas")
       .select(
         "id,status,origem,candidatos(nome,cidade,estado),vagas(cargo,requisicao,area,local,estado,salario,tipo_contrato,confidencial,empresas(nome))",
       )
       .order("inscrito_em", { ascending: false }),
-    s.from("vagas").select("id,status"),
+    s.from("vagas").select("id,status,cargo").order("cargo"),
+    s.from("avaliacoes").select("candidatura_id,nota_tecnica,competencias,parecer,decisao,created_at").order("created_at",{ascending:false}),
   ]);
   const list: any[] = (rows || []) as any[];
+  const firstEval=(avaliacoes||[]).find((x:any)=>x.candidatura_id===list[0]?.id);
   return (
     <section className="module-page process-page">
       <PageHeader
@@ -74,10 +76,7 @@ export default async function Page() {
         />
       </div>
       <form className="module-panel process-filters" action="/candidaturas" method="get">
-        <select name="vaga">
-          <option>Todas as vagas</option>
-        </select>
-        <select disabled aria-label="Empresa"><option>Todas as empresas</option></select>
+        <select name="vaga" defaultValue=""><option value="">Todas as vagas</option>{(vagas||[]).map((v:any)=><option key={v.id} value={v.id}>{v.cargo}</option>)}</select>
         <select name="status"><option value="">Todas as etapas</option><option value="novo">Recebidos</option><option value="triagem">Triagem</option><option value="entrevista">Em Entrevista</option><option value="aprovado">Finalistas</option><option value="contratado">Contratados</option></select>
         <label className="searchbox"><Search size={14}/><input name="q" placeholder="Buscar candidato..." /></label>
         <button className="primary-button" type="submit"><Search size={15}/> Abrir processos</button>
@@ -88,9 +87,7 @@ export default async function Page() {
             Kanban do Processo Seletivo{" "}
             <small>({list.length} candidatos)</small>
           </b>
-          <span>
-            Lista　 <b>Kanban</b>　 Ver todos →
-          </span>
+          <span><a href="/candidaturas">Lista</a>　 <b>Kanban</b>　 <a href="/candidaturas">Ver todos →</a></span>
         </div>
         <div className="kanban-grid">
           {cols.map(([key, label]) => {
@@ -117,14 +114,14 @@ export default async function Page() {
                     </div>
                     <form action={mover}>
                       <input type="hidden" name="id" value={r.id} />
-                      <select name="status" defaultValue={key}>
+                      <select name="status" defaultValue={r.status}>
                         {cols.map(([k, l]) => (
                           <option key={k} value={k}>
                             {l}
                           </option>
                         ))}
                       </select>
-                      <button>⋮</button>
+                      <button type="submit" aria-label={`Salvar etapa de ${r.candidatos?.nome||"candidato"}`}>→</button>
                     </form>
                   </div>
                 ))}
@@ -180,19 +177,7 @@ export default async function Page() {
               <a href="/candidatos">Ver candidato</a>
             </div>
             <h3>{list[0].candidatos?.nome}</h3>
-            <p>
-              Nota técnica　<span className="stars">★★★★☆</span>　4,0
-            </p>
-            <b>Competências</b>
-            <div className="review-checks">
-              ☑ Comunicação　 ☑ Proatividade
-              <br />☑ Trabalho em equipe　☑ Conhecimento técnico
-              <br />☑ Organização　□ Liderança
-            </div>
-            <label>
-              Parecer final
-              <textarea defaultValue="Candidato com bom perfil, demonstrou interesse e aderência à vaga." />
-            </label>
+            {firstEval?<><p><b>Nota técnica</b> {firstEval.nota_tecnica??"—"}/5</p><b>Competências</b><div className="review-checks">{(firstEval.competencias||[]).length?(firstEval.competencias||[]).join(" · "):"Nenhuma competência registrada."}</div><label>Parecer final<div className="fake-textarea">{firstEval.parecer||"Sem parecer registrado."}</div></label></>:<p className="muted">Ainda não há avaliação registrada para este candidato.</p>}
             <div className="review-actions"><a href="/avaliacoes">Abrir avaliação</a></div>
           </div>
         </div>
