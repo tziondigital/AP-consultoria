@@ -79,3 +79,41 @@ body{font-family:Inter,"Segoe UI",Arial,sans-serif!important;background:var(--re
 .process-card .text-trigger span{display:-webkit-box;max-width:100%;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-height:1.25;overflow-wrap:anywhere}.process-card>div small{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row-actions>button,.row-actions .icon-button{flex:0 0 32px;width:32px;height:32px;padding:0}
 @media(max-width:760px){.record-modal-backdrop{padding:12px}.record-modal{width:calc(100vw - 24px);max-height:calc(100dvh - 24px)}.record-modal-body{padding:14px}.record-modal-body>form{grid-template-columns:1fr}.record-modal-body>form>.primary-button{grid-column:auto;width:100%}.mock-welcome h1{font-size:26px}}
+
+/* AP 2026 — contrato único de botões, ações e modais */
+button,a,summary,input,select,textarea{font-family:inherit}
+.primary-button,.outline-button,.small-button,.text-button,.danger-button,.button,.filter-submit,.modal-cancel-button,.action-popover>summary{
+  box-sizing:border-box;min-height:40px;border-radius:7px;font-size:13px;font-weight:700;line-height:1.2;display:inline-flex;align-items:center;justify-content:center;gap:7px;white-space:nowrap;text-decoration:none;cursor:pointer
+}
+.primary-button,.button{border:1px solid #0755a7;background:#075fb9;color:#fff;padding:0 15px}
+.primary-button:hover,.button:hover{background:#064c94}
+.outline-button,.small-button{border:1px solid #c9d8e8;background:#fff;color:#0b5ea9;padding:0 13px}
+.outline-button:hover,.small-button:hover{background:#f1f6fb;border-color:#9ebbd6}
+.small-button{min-height:34px;padding:0 10px;font-size:12px}
+.danger-button{border:1px solid #dc3545;background:#fff;color:#b42332;padding:0 13px}
+.danger-button:hover{background:#fff3f4}
+.text-button{min-height:32px;border:0;background:transparent;color:#075fb9;padding:0 8px}
+.filter-submit{width:40px;min-width:40px;padding:0;border:1px solid #c9d8e8;background:#fff;color:#075fb9}
+.action-popover>summary{list-style:none;border:1px solid #0755a7;background:#075fb9;color:#fff;padding:0 15px}
+.action-popover>summary::-webkit-details-marker{display:none}
+.action-popover>summary>button{all:unset;color:inherit;font:inherit;display:inline-flex;align-items:center;gap:7px;cursor:pointer}
+.row-actions,.interview-actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}
+.icon-button,.action-trigger{box-sizing:border-box;width:34px;height:34px;min-width:34px;min-height:34px;padding:0;border:1px solid #d2dfec;border-radius:7px;background:#fff;color:#315d86;display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+.action-trigger-view{color:#075fb9;background:#f7fbff}.action-trigger-edit{color:#815900;background:#fffaf0}
+.icon-button:hover,.action-trigger:hover{border-color:#91b2d2;background:#eef6fd}.action-trigger-edit:hover{border-color:#e0bd6b;background:#fff5db}
+.modal-close-button{width:34px!important;height:34px!important;min-width:34px!important;flex:0 0 34px}
+.record-modal{width:min(900px,calc(100vw - 48px));max-height:calc(100dvh - 48px)}
+.record-modal-body{font-size:13px}.record-modal-body>div{display:grid;gap:8px}.record-modal-body h3,.record-modal-body b{overflow-wrap:anywhere}.record-modal-body p{margin:0;padding:8px 0;border-bottom:1px solid #edf2f7}.record-modal-body p:last-child{border-bottom:0}
+.record-modal-body>form,.record-modal-body form:not(.attachment-form){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px}
+.record-modal-body form>label,.record-modal-body .field-group{min-width:0}.record-modal-body .wide,.record-modal-body fieldset.wide,.record-modal-body form>small{grid-column:1/-1}
+.record-modal-body form>.primary-button,.record-modal-body form>.danger-button{grid-column:1/-1;justify-self:end;width:auto}
+.record-modal-footer{min-height:58px}.modal-cancel-button{min-width:96px}
+.action-trigger-text{color:#075fb9;font-weight:700;text-decoration:none;background:transparent;border:0;padding:0;cursor:pointer}
+@media(max-width:760px){
+ .primary-button,.outline-button,.danger-button,.button,.action-popover>summary{min-height:44px}
+ .record-modal{width:calc(100vw - 24px);max-height:calc(100dvh - 24px)}
+ .record-modal-body>form,.record-modal-body form:not(.attachment-form){grid-template-columns:1fr}
+ .record-modal-body .wide,.record-modal-body fieldset.wide,.record-modal-body form>small,.record-modal-body form>.primary-button,.record-modal-body form>.danger-button{grid-column:1}
+ .record-modal-body form>.primary-button,.record-modal-body form>.danger-button{width:100%}
+ .row-actions,.interview-actions{gap:8px}
+}
