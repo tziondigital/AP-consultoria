@@ -10,6 +10,7 @@ import { ActionModal } from "@/components/ActionModal";
 import {ConfirmSubmitButton} from "@/components/ConfirmSubmitButton";
 import { createClient } from "@/lib/supabase/server";
 import { KpiCard, PageHeader } from "@/components/ModuleUI";
+import Link from "next/link";
 const br = (v: string) =>
   new Date(v).toLocaleString("pt-BR", {
     timeZone: "America/Sao_Paulo",
@@ -17,9 +18,12 @@ const br = (v: string) =>
     minute: "2-digit",
   });
 const days = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
-type Params={status?:string;q?:string};
+type Params={status?:string;q?:string;pagina?:string};
 export default async function Page({searchParams}:{searchParams:Promise<Params>}) {
   const params=await searchParams;
+  const localToday=new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo"}).format(new Date());
+  const anchor=new Date(localToday+"T12:00:00-03:00"),weekday=(anchor.getDay()+6)%7,monday=new Date(anchor);monday.setDate(anchor.getDate()-weekday);
+  const weekDates=days.map((label,i)=>{const d=new Date(monday);d.setDate(monday.getDate()+i);return{label,key:new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo"}).format(d),display:new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",day:"2-digit",month:"2-digit"}).format(d)}});
   async function excluir(f: FormData) {"use server";const s=await createClient();const {error}=await s.from("entrevistas").delete().eq("id",String(f.get("id")));if(error)throw new Error(error.message);revalidatePath("/entrevistas");revalidatePath("/dashboard");revalidatePath("/candidaturas");}
   async function atualizar(f: FormData) {"use server";const s=await createClient();const {error}=await s.from("entrevistas").update({status:String(f.get("status")),link:String(f.get("link")||"")||null,duracao_minutos:Number(f.get("duracao_minutos")||45),observacoes:String(f.get("observacoes")||"")||null}).eq("id",String(f.get("id")));if(error)throw new Error(error.message);revalidatePath("/entrevistas");revalidatePath("/dashboard");revalidatePath("/candidaturas");}
   async function criar(f: FormData) {
@@ -80,7 +84,8 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
     ),
     confirmed = all.filter((r: any) => r.status === "confirmada").length,
     pending = all.filter((r: any) => r.status === "agendada").length,
-    done = all.filter((r: any) => r.status === "realizada").length;
+    done = all.filter((r: any) => r.status === "realizada").length,
+    size=8,page=Math.max(1,Number(params.pagina)||1),pages=Math.max(1,Math.ceil(list.length/size)),pageRows=list.slice((page-1)*size,page*size);
   return (
     <section className="module-page">
       <PageHeader
@@ -171,14 +176,14 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
                 <span key={x}>{x}</span>
               ))}
             </div>
-            {days.map((d, i) => (
-              <div className="day-col" key={d}>
+            {weekDates.map((d, i) => (
+              <div className="day-col" key={d.key}>
                 <b>
-                  {d}
-                  <small>{22 + i}/09</small>
+                  {d.label}
+                  <small>{d.display}</small>
                 </b>
                 {list
-                  .filter((_: any, j: number) => j % 7 === i)
+                  .filter((r:any)=>new Intl.DateTimeFormat("en-CA",{timeZone:"America/Sao_Paulo"}).format(new Date(r.data))===d.key)
                   .slice(0, 3)
                   .map((r: any, j: number) => (
                     <article
@@ -210,7 +215,7 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
                 </tr>
               </thead>
               <tbody>
-                {list.slice(0, 8).map((r: any) => (
+                {pageRows.map((r: any) => (
                   <tr key={r.id}>
                     <td>
                       <b>{br(r.data)}</b>
@@ -236,9 +241,9 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
           </div>
           <div className="pagination">
             <span>
-              Mostrando {Math.min(8, list.length)} de {list.length} entrevistas
+              Mostrando {pageRows.length} de {list.length} entrevistas
             </span>
-            <b>1</b>
+            <nav>{Array.from({length:pages},(_,idx)=>idx+1).map(n=><Link key={n} className={n===page?"active":""} href={`/entrevistas?status=${encodeURIComponent(params.status||"")}&q=${encodeURIComponent(params.q||"")}&pagina=${n}`}>{n}</Link>)}</nav>
           </div>
         </div>
       </div>
