@@ -75,7 +75,7 @@ export default async function Page({searchParams}:{searchParams:Promise<Params>}
   const all = rows || [],
     query=(params.q||"").trim().toLocaleLowerCase("pt-BR"),
     list=all.filter((r:any)=>(!query||[r.candidatos?.nome,r.candidatos?.email,r.vagas?.cargo,r.vagas?.empresas?.nome].filter(Boolean).join(" ").toLocaleLowerCase("pt-BR").includes(query))&&(!params.status||r.status===params.status)),
-    today = new Date().toLocaleDateString("pt-BR"),
+    today = new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo"}).format(new Date()),
     todayRows = list.filter(
       (r: any) =>
         new Date(r.data).toLocaleDateString("pt-BR", {
